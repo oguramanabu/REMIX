@@ -82,15 +82,30 @@ production:
   primary:
     <<: *default
     url: <%= ENV["DATABASE_URL"] %>
+    prepared_statements: false
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    timeout: 5000
+    checkout_timeout: 5
+    reaping_frequency: 10
+    connect_timeout: 10
   cable:
     <<: *default
     url: <%= ENV["DATABASE_URL"] %>
     migrations_paths: db/cable_migrate
+    prepared_statements: false
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    timeout: 5000
   cache:
     <<: *default
     url: <%= ENV["DATABASE_URL"] %>
     migrations_paths: db/cache_migrate
+    prepared_statements: false
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    timeout: 5000
   queue:
     <<: *default
     url: <%= ENV["DATABASE_URL"] %>
     migrations_paths: db/queue_migrate
+    prepared_statements: false
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    timeout: 5000
