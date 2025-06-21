@@ -80,6 +80,9 @@ test:
 #
 production:
   <<: *default
+  database: remix_pg
+  username: remix_pg_user
+  password: <%= ENV["REMIX_DATABASE_PASSWORD"] %>
   url: <%= ENV["DATABASE_URL"] %>
 
   cache:
