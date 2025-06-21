@@ -38,10 +38,14 @@ module Authentication
       session.delete(:return_to_after_authenticating) || root_url
     end
 
-    def start_new_session_for(user)
+    def start_new_session_for(user, remember: false)
       user.sessions.create!(user_agent: request.user_agent, ip_address: request.remote_ip).tap do |session|
         Current.session = session
-        cookies.signed.permanent[:session_id] = { value: session.id, httponly: true, same_site: :lax }
+        if remember
+          cookies.signed.permanent[:session_id] = { value: session.id, httponly: true, same_site: :lax }
+        else
+          cookies.signed[:session_id] = { value: session.id, httponly: true, same_site: :lax, expires: 2.hours.from_now }
+        end
       end
     end
 
