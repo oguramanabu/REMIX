@@ -6,11 +6,35 @@ class PasswordsController < ApplicationController
   end
 
   def create
-    if user = User.find_by(email_address: params[:email_address])
-      PasswordsMailer.reset(user).deliver_later
-    end
+    user = User.find_by(email_address: params[:email_address])
 
-    redirect_to new_session_path, notice: "Password reset instructions sent (if user with that email address exists)."
+    respond_to do |format|
+      format.html { 
+        if user
+          PasswordsMailer.reset(user).deliver_later
+        end
+        redirect_to new_session_path, notice: "Password reset instructions sent (if user with that email address exists)." 
+      }
+      format.turbo_stream {
+        if user
+          PasswordsMailer.reset(user).deliver_later
+          flash.now[:notice] = "パスワードリセット用のメールを送信しました。"
+          render turbo_stream: [
+            turbo_stream.replace("password_reset_form",
+              partial: "passwords/success_message",
+              locals: { message: "パスワードリセット用のメールを送信しました。メールをご確認ください。" }
+            ),
+            turbo_stream.append("body", "<script>setTimeout(() => { document.querySelector('[data-controller=\"modal\"]').dispatchEvent(new CustomEvent('modal:close')); }, 3000);</script>")
+          ]
+        else
+          flash.now[:alert] = "このメールアドレスは登録されていません。"
+          render turbo_stream: turbo_stream.replace("password_reset_form",
+            partial: "passwords/new_form",
+            locals: { alert_message: "このメールアドレスは登録されていません。" }
+          )
+        end
+      }
+    end
   end
 
   def edit

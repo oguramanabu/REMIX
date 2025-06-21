@@ -1,1 +1,32 @@
-header
+<% nav_items = [
+  { path: root_path,       icon: "bell_icon",     tip: "ダッシュボード" },
+  { path: "/orders",        icon: "order_icon",    tip: "オーダー" },
+  { path: "/fab",     icon: "fab_icon",      tip: "生産" },
+  { path: "/delivery",      icon: "delivery_icon", tip: "デリバリー" },
+  { path: "/relations",    icon: "relation_icon", tip: "関係各社" }
+] %>
+<header class="top-0 left-0 bg-gray-100 p-3 h-screen sticky z-10 w-25" >
+  <nav class="flex flex-col justify-between h-full">
+    <ul class="flex flex-col items-center">
+      <% nav_items.each do |item| %>
+        <% is_current = request.path.start_with?(item[:path]) %>
+        <% icon_class = is_current ? "text-black" : "text-gray-400 group-hover:text-black transition-colors" %>
+        <li class = "flex justify-center w-full <%= is_current ? "bg-white block w-full rounded-3xl" : "" %>">
+          <%= link_to item[:path], class: "group block p-4 tooltip tooltip-right", data: { tip: item[:tip] } do %>
+            <%= render "shared/#{item[:icon]}", header_icon_class: icon_class %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+    <div class="dropdown dropdown-right dropdown-end flex justify-center">
+      <div tabindex="0" role="button">
+        <%= image_tag "logo.png", class: "h-12 w-12 rounded-full cursor-pointer" %>
+      </div>
+      <ul tabindex="0" class="menu menu-vertical dropdown-content bg-base-100 rounded-box p-2 shadow-md rounded-2xl">
+        <li><%= link_to "アカウント", "#", class: "whitespace-nowrap" %></li>
+        <li><%= link_to "設定", "#", class: "whitespace-nowrap" %></li>
+        <li><%= button_to "ログアウト", session_path, method: :delete, class: "cursor-pointer", data: { confirm: "本当にログアウトしますか？" } %></li>
+      </ul>
+    </div>
+  </nav>
+</header>

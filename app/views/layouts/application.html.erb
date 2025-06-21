@@ -1,21 +1,10 @@
 <!DOCTYPE html>
 <html>
   <%= render "layouts/head" %>
-  <%= render "layouts/header" %>
-  <body>
-    <% if authenticated? %>
-      <ul class="menu menu-horizontal px-1">
-        <li>
-          <%= button_to "Logout", session_path, method: :delete, class: "btn btn-outline btn-sm cursor-pointer" %>
-        </li>
-      </ul>
-      <main class="container mx-auto mt-8 px-5">
-        <%= yield %>
-      </main>
-    <% else %>
-      <main>
-        <%= yield %>
-      </main>
-    <% end %>
+  <body class="flex">
+    <%= render "layouts/header" if authenticated? %>
+    <main class="w-full min-h-screen">
+      <%= yield %>
+    </main>
   </body>
 </html>
