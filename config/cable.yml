@@ -9,5 +9,4 @@ test:
   adapter: test
 
 production:
-  adapter: solid_cable
-  database: primary
+  adapter: async
