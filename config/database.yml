@@ -12,6 +12,17 @@
 # Configure Using Gemfile
 # gem "pg"
 #
+<%
+# Helper method to fix Render database URL
+def render_database_url
+  database_url = ENV["DATABASE_URL"]
+  return database_url unless database_url&.include?("dpg-") && database_url.include?("-a:")
+  
+  # Replace internal hostname with external hostname for Render
+  database_url.gsub(/dpg-[a-z0-9-]+-a:/, "dpg-d1b95vbe5dus73ec83sg-a.oregon-postgres.render.com:")
+end
+%>
+
 default: &default
   adapter: postgresql
   encoding: unicode
@@ -79,33 +90,21 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  primary:
+  primary: &primary_production
     <<: *default
-    url: <%= ENV["DATABASE_URL"] %>
-    prepared_statements: false
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-    timeout: 5000
-    checkout_timeout: 5
-    reaping_frequency: 10
-    connect_timeout: 10
+    database: remix_pg
+    username: remix_pg_user
+    password: <%= ENV["REMIX_DATABASE_PASSWORD"] %>
   cable:
-    <<: *default
+    <<: *primary_production
+    database: remix_pg_cable
     url: <%= ENV["DATABASE_URL"] %>
     migrations_paths: db/cable_migrate
-    prepared_statements: false
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-    timeout: 5000
   cache:
-    <<: *default
-    url: <%= ENV["DATABASE_URL"] %>
+    <<: *primary_production
+    database: remix_pg_cache
     migrations_paths: db/cache_migrate
-    prepared_statements: false
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-    timeout: 5000
   queue:
-    <<: *default
-    url: <%= ENV["DATABASE_URL"] %>
+    <<: *primary_production
+    database: remix_pg_queue
     migrations_paths: db/queue_migrate
-    prepared_statements: false
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-    timeout: 5000
