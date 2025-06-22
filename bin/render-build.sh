@@ -4,10 +4,6 @@ set -o errexit
 
 echo "DATABASE_URL (masked): $(echo $DATABASE_URL | sed 's/:[^:@]*@/:***@/')"
 
-# Parse and show database connection components
-echo "Parsing DATABASE_URL components..."
-bundle exec rake db:parse_database_url
-
 bundle install
 bundle exec rails assets:precompile
 bundle exec rails assets:clean
