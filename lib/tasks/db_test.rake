@@ -5,7 +5,7 @@ namespace :db do
       puts "Testing database connection..."
       puts "DATABASE_URL present: #{ENV['DATABASE_URL'].present?}"
       puts "DATABASE_URL (masked): #{ENV['DATABASE_URL']&.gsub(/:[^:@]*@/, ':***@')}"
-      
+
       # Show individual environment variables
       puts "\nIndividual Database Environment Variables:"
       puts "REMIX_DATABASE_HOST: #{ENV['REMIX_DATABASE_HOST']}"
@@ -13,11 +13,11 @@ namespace :db do
       puts "REMIX_DATABASE_USERNAME: #{ENV['REMIX_DATABASE_USERNAME']}"
       puts "REMIX_DATABASE_PASSWORD: #{ENV['REMIX_DATABASE_PASSWORD'].present? ? '***' : 'not set'}"
       puts "REMIX_DATABASE_PORT: #{ENV['REMIX_DATABASE_PORT'] || '5432 (default)'}"
-      
+
       puts "\nTesting primary database connection..."
       ActiveRecord::Base.connection.execute("SELECT 1")
       puts "✓ Primary database connection successful"
-      
+
       # Test each database configuration
       %w[cable cache queue].each do |db_name|
         puts "Testing #{db_name} database..."
@@ -28,7 +28,7 @@ namespace :db do
       rescue => e
         puts "✗ #{db_name} database connection failed: #{e.message}"
       end
-      
+
     rescue => e
       puts "✗ Database connection failed: #{e.message}"
       puts "Error class: #{e.class}"
@@ -36,12 +36,12 @@ namespace :db do
       puts e.backtrace.first(5)
     end
   end
-  
+
   desc "Parse DATABASE_URL and show individual components"
   task parse_database_url: :environment do
-    database_url = ENV['DATABASE_URL']
+    database_url = ENV["DATABASE_URL"]
     if database_url.present?
-      require 'uri'
+      require "uri"
       begin
         uri = URI.parse(database_url)
         puts "Parsed DATABASE_URL components:"
@@ -50,7 +50,7 @@ namespace :db do
         puts "Database: #{uri.path[1..-1]}" # Remove leading slash
         puts "Username: #{uri.user}"
         puts "Password: #{uri.password.present? ? '***' : 'not set'}"
-        
+
         puts "\nTo set as individual environment variables:"
         puts "REMIX_DATABASE_HOST=#{uri.host}"
         puts "REMIX_DATABASE_PORT=#{uri.port}"

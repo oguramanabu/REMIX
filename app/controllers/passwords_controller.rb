@@ -9,11 +9,11 @@ class PasswordsController < ApplicationController
     user = User.find_by(email_address: params[:email_address])
 
     respond_to do |format|
-      format.html { 
+      format.html {
         if user
           PasswordsMailer.reset(user).deliver_later
         end
-        redirect_to new_session_path, notice: "Password reset instructions sent (if user with that email address exists)." 
+        redirect_to new_session_path, notice: "Password reset instructions sent (if user with that email address exists)."
       }
       format.turbo_stream {
         if user

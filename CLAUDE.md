@@ -147,3 +147,6 @@ bin/rails assets:clean
 - Kamal for deployment orchestration
 - Thruster for production HTTP acceleration
 - Health check endpoint at `/up`
+
+## Deployment Precautions
+- Don't edit deployment related files to render like render-build.sh, render.yml, database.yml

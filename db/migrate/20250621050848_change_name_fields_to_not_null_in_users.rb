@@ -7,7 +7,7 @@ class ChangeNameFieldsToNotNullInUsers < ActiveRecord::Migration[8.0]
       family_name_kanji: '不明',
       given_name_kanji: 'ユーザー'
     )
-    
+
     # Now make the columns NOT NULL
     change_column_null :users, :family_name_eng, false
     change_column_null :users, :given_name_eng, false
