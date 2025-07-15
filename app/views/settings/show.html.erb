@@ -105,7 +105,7 @@
           <% end %>
         </div>
         <!-- All Users List -->
-        <div class="divider">現在のアクティブユーザー（<%= @all_users.count %>人）</div>
+        <div class="divider">アクティブユーザー（<%= @all_users.count %>人）</div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
           <% @all_users.each do |user| %>
             <div class="card bg-base-200 p-4">
@@ -153,11 +153,11 @@
                   <p class="text-sm text-gray-500">送信日: <%= invitation.invited_at.strftime("%Y/%m/%d %H:%M") %></p>
                 </div>
                 <div class="flex items-center space-x-2">
-                  <div class="badge badge-warning">招待中</div>
+                  <div class="btn btn-outline">招待中</div>
                   <% if invitation.invited_by == Current.user %>
                     <%= button_to "キャンセル", user_invitation_path(invitation), 
                         method: :delete, 
-                        class: "btn btn-xs btn-error",
+                        class: "btn btn-outline btn-error",
                         data: { 
                           confirm: "この招待をキャンセルしますか？\nキャンセルした場合、このメールアドレスでの登録はできなくなります。" 
                         } %>
