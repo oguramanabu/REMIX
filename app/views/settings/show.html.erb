@@ -85,7 +85,6 @@
     <!-- User Management Section -->
     <div class="card bg-base-100 shadow-lg mt-8">
       <div class="card-body">
-        <h2 class="card-title mx-auto">ユーザー</h2>
         <!-- User Invitation Form -->
         <div class="mb-6">
           <h3 class="text-lg font-semibold mb-4">新規ユーザー招待</h3>
@@ -150,15 +149,26 @@
               <div class="flex justify-between items-center p-3 bg-base-200 rounded-lg">
                 <div>
                   <p class="font-medium"><%= invitation.email_address %></p>
+                  <p class="text-sm text-gray-500">送信者: <%= invitation.invited_by.full_name_kanji %></p>
                   <p class="text-sm text-gray-500">送信日: <%= invitation.invited_at.strftime("%Y/%m/%d %H:%M") %></p>
                 </div>
-                <div class="badge badge-warning">招待中</div>
+                <div class="flex items-center space-x-2">
+                  <div class="badge badge-warning">招待中</div>
+                  <% if invitation.invited_by == Current.user %>
+                    <%= button_to "キャンセル", user_invitation_path(invitation), 
+                        method: :delete, 
+                        class: "btn btn-xs btn-error",
+                        data: { 
+                          confirm: "この招待をキャンセルしますか？\nキャンセルした場合、このメールアドレスでの登録はできなくなります。" 
+                        } %>
+                  <% end %>
+                </div>
               </div>
             <% end %>
           </div>
         <% end %>
       </div>
     </div>
-    <%= button_to "ログアウト", session_path, method: :delete, class: "cursor-pointer btn btn-soft btn-error", data: { confirm: "本当にログアウトしますか？" } %>
+    <%= button_to "ログアウト", session_path, method: :delete, class: "cursor-pointer btn btn-soft btn-error w-full mt-4", data: { confirm: "本当にログアウトしますか？" } %>
   </div>
 </div>

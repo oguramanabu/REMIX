@@ -4,7 +4,7 @@ class SettingsController < ApplicationController
   def show
     @user = Current.user
     @user_invitation = UserInvitation.new
-    @pending_invitations = @user.sent_invitations.pending.order(created_at: :desc)
+    @pending_invitations = UserInvitation.pending.includes(:invited_by).order(created_at: :desc)
     @all_users = User.order(:family_name_kanji, :given_name_kanji)
   end
 

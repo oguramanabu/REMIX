@@ -12,15 +12,20 @@ class UserInvitation < ApplicationRecord
   before_validation :generate_token, on: :create
   before_validation :set_invited_at, on: :create
 
-  scope :pending, -> { where(accepted_at: nil) }
+  scope :pending, -> { where(accepted_at: nil, cancelled_at: nil) }
   scope :accepted, -> { where.not(accepted_at: nil) }
+  scope :cancelled, -> { where.not(cancelled_at: nil) }
 
   def pending?
-    accepted_at.nil?
+    accepted_at.nil? && cancelled_at.nil?
   end
 
   def accepted?
     accepted_at.present?
+  end
+
+  def cancelled?
+    cancelled_at.present?
   end
 
   def expired?
@@ -29,6 +34,10 @@ class UserInvitation < ApplicationRecord
 
   def accept!
     update!(accepted_at: Time.current)
+  end
+
+  def cancel!
+    update!(cancelled_at: Time.current)
   end
 
   private

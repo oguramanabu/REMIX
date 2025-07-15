@@ -10,6 +10,11 @@ class UserActivationsController < ApplicationController
       return
     end
 
+    if @user_invitation.cancelled?
+      redirect_to new_session_path, alert: "この招待はキャンセルされています。"
+      return
+    end
+
     if @user_invitation.expired?
       redirect_to new_session_path, alert: "招待リンクの有効期限が切れています。"
       return
@@ -27,7 +32,7 @@ class UserActivationsController < ApplicationController
     @token = params[:token]
     @user_invitation = UserInvitation.find_by(token: @token)
 
-    if @user_invitation.nil? || @user_invitation.expired? || @user_invitation.accepted?
+    if @user_invitation.nil? || @user_invitation.cancelled? || @user_invitation.expired? || @user_invitation.accepted?
       redirect_to new_session_path, alert: "無効な招待リンクです。"
       return
     end
