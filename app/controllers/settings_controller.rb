@@ -5,6 +5,7 @@ class SettingsController < ApplicationController
     @user = Current.user
     @user_invitation = UserInvitation.new
     @pending_invitations = @user.sent_invitations.pending.order(created_at: :desc)
+    @all_users = User.order(:family_name_kanji, :given_name_kanji)
   end
 
   def update

@@ -81,16 +81,17 @@
           <% end %>
         </div>
       </div>
-      <!-- User Invitation Section -->
-      <div class="card bg-base-100 shadow-lg">
-        <div class="card-body">
-          <h2 class="card-title mx-auto">ユーザー招待</h2>
+    </div>
+    <!-- User Management Section -->
+    <div class="card bg-base-100 shadow-lg mt-8">
+      <div class="card-body">
+        <h2 class="card-title mx-auto">ユーザー</h2>
+        <!-- User Invitation Form -->
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-4">新規ユーザー招待</h3>
           <%= form_with model: @user_invitation, url: user_invitations_path, local: true do |form| %>
-            <div class="space-y-4">
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">招待するメールアドレス</span>
-                </label>
+            <div class="space-y-4 flex">
+              <div class="form-control mr-4 w-full">
                 <%= form.email_field :email_address, class: "input input-bordered w-full", placeholder: "example@email.com", required: true %>
                 <% if @user_invitation.errors[:email_address].any? %>
                   <label class="label">
@@ -99,27 +100,65 @@
                 <% end %>
               </div>
               <div class="card-actions justify-end">
-                <%= form.submit "招待を送信", class: "btn btn-primary" %>
+                <%= form.submit "招待メールを送信", class: "btn btn-neutral" %>
               </div>
             </div>
           <% end %>
-          <% if @pending_invitations.any? %>
-            <div class="divider">送信済み招待</div>
-            <div class="space-y-2">
-              <% @pending_invitations.each do |invitation| %>
-                <div class="flex justify-between items-center p-3 bg-base-200 rounded-lg">
-                  <div>
-                    <p class="font-medium"><%= invitation.email_address %></p>
-                    <p class="text-sm text-gray-500">送信日: <%= invitation.invited_at.strftime("%Y/%m/%d %H:%M") %></p>
+        </div>
+        <!-- All Users List -->
+        <div class="divider">現在のアクティブユーザー（<%= @all_users.count %>人）</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
+          <% @all_users.each do |user| %>
+            <div class="card bg-base-200 p-4">
+              <div class="flex flex-col items-center text-center space-y-2">
+                <div class="avatar">
+                  <div class="w-16 h-16 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center">
+                    <% if user.avatar.attached? %>
+                      <%= image_tag user.avatar.variant(resize_to_limit: [64, 64]), 
+                            alt: "#{user.full_name_kanji}のアバター",
+                            class: "w-full h-full object-cover",
+                            loading: "lazy" %>
+                    <% else %>
+                      <div class="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center"
+                             role="img"
+                             aria-label="<%= user.full_name_kanji.first %>">
+                        <span class="text-white text-lg font-semibold">
+                          <%= user.full_name_kanji.first %>
+                        </span>
+                      </div>
+                    <% end %>
                   </div>
-                  <div class="badge badge-warning">招待中</div>
                 </div>
-              <% end %>
+                <div class="w-full">
+                  <div class="flex items-center justify-center space-x-2">
+                    <p class="font-medium text-sm"><%= user.full_name_kanji %></p>
+                    <% if user == Current.user %>
+                      <span class="badge badge-primary badge-xs">自分</span>
+                    <% end %>
+                  </div>
+                  <p class="text-xs text-gray-500"><%= user.full_name_eng %></p>
+                </div>
+              </div>
             </div>
           <% end %>
         </div>
+        <!-- Pending Invitations -->
+        <% if @pending_invitations.any? %>
+          <div class="divider">招待中（<%= @pending_invitations.count %>件）</div>
+          <div class="space-y-2">
+            <% @pending_invitations.each do |invitation| %>
+              <div class="flex justify-between items-center p-3 bg-base-200 rounded-lg">
+                <div>
+                  <p class="font-medium"><%= invitation.email_address %></p>
+                  <p class="text-sm text-gray-500">送信日: <%= invitation.invited_at.strftime("%Y/%m/%d %H:%M") %></p>
+                </div>
+                <div class="badge badge-warning">招待中</div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
       </div>
     </div>
-    <%= button_to "ログアウト", session_path, method: :delete, class: "cursor-pointer", data: { confirm: "本当にログアウトしますか？" } %>
+    <%= button_to "ログアウト", session_path, method: :delete, class: "cursor-pointer btn btn-soft btn-error", data: { confirm: "本当にログアウトしますか？" } %>
   </div>
 </div>
