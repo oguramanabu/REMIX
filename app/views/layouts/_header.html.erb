@@ -19,13 +19,25 @@
       <% end %>
     </ul>
     <div class="dropdown dropdown-right dropdown-end flex justify-center">
-      <div tabindex="0" role="button">
-        <%= image_tag "logo.png", class: "h-12 w-12 rounded-full cursor-pointer" %>
+      <div tabindex="0" role="button" class="avatar">
+        <div class="w-12 h-12 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center">
+          <% if Current.user&.avatar&.attached? %>
+            <%= image_tag Current.user.avatar.variant(resize_to_limit: [48, 48]), 
+                alt: "#{Current.user.full_name_kanji}のアバター",
+                class: "w-full h-full object-cover" %>
+          <% else %>
+            <div class="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
+              <span class="text-white text-sm font-semibold">
+                <%= Current.user&.full_name_kanji&.first || "U" %>
+              </span>
+            </div>
+          <% end %>
+        </div>
       </div>
       <ul tabindex="0" class="menu menu-vertical dropdown-content bg-base-100 rounded-box p-2 shadow-md rounded-2xl">
         <li><%= link_to "アカウント", "#", class: "whitespace-nowrap" %></li>
         <li><%= link_to "設定", settings_path, class: "whitespace-nowrap" %></li>
-        <li><%= button_to "ログアウト", session_path, method: :delete, class: "cursor-pointer", data: { confirm: "本当にログアウトしますか？" } %></li>
+
       </ul>
     </div>
   </nav>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Catallaxy - アカウント招待</title>
+  <style>
+    body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+    .container { max-width: 600px; margin: 0 auto; background-color: white; padding: 40px; border-radius: 8px; }
+    .header { text-align: center; margin-bottom: 40px; }
+    .content { margin-bottom: 30px; }
+    .button { display: inline-block; padding: 12px 24px; background-color: #3b82f6; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; }
+    .footer { font-size: 14px; color: #666; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 style="color: #333; margin-bottom: 10px;">Catallaxy</h1>
+      <h2 style="color: #666; font-weight: normal;">アカウント招待のお知らせ</h2>
+    </div>
+    
+    <div class="content">
+      <p>こんにちは、</p>
+      
+      <p><strong><%= @invited_by.full_name_kanji %></strong>さんより、Catallаxyへの招待をお送りいたします。</p>
+      
+      <p>以下のリンクをクリックして、アカウントを作成してください：</p>
+      
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="<%= @activation_url %>" class="button">アカウントを作成する</a>
+      </div>
+      
+      <p><strong>注意：</strong>この招待リンクは7日間有効です。期限切れになった場合は、再度招待を依頼してください。</p>
+    </div>
+    
+    <div class="footer">
+      <p>このメールに覚えのない場合は、無視していただいて構いません。</p>
+      <p>Catallaxy運営チーム</p>
+    </div>
+  </div>
+</body>
+</html>

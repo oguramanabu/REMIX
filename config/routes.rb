@@ -3,6 +3,9 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
   resource :settings, only: [ :show, :update ]
   resources :orders
+  resources :user_invitations, only: [ :create ]
+  get "activate/:token", to: "user_activations#new", as: :activate_user_invitation
+  post "activate/:token", to: "user_activations#create"
   get "fab" => "fab#index"
   get "delivery" => "delivery#index"
   get "relations" => "relations#index"

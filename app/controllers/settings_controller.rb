@@ -3,6 +3,8 @@ class SettingsController < ApplicationController
 
   def show
     @user = Current.user
+    @user_invitation = UserInvitation.new
+    @pending_invitations = @user.sent_invitations.pending.order(created_at: :desc)
   end
 
   def update

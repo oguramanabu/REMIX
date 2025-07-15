@@ -1,58 +1,56 @@
 <div class="min-h-screen bg-gray-50 py-8">
   <div class="max-w-4xl mx-auto px-6">
-    <h1 class="text-3xl font-bold text-gray-900 mb-8">設定</h1>
-    
     <% if alert = flash[:alert] %>
       <div class="alert alert-error mb-6">
         <span><%= alert %></span>
       </div>
     <% end %>
-    
     <% if notice = flash[:notice] %>
       <div class="alert alert-success mb-6">
         <span><%= notice %></span>
       </div>
     <% end %>
-
+    <div class="mb-8 flex">
+      <!-- User Information Section -->
+      <p class="text-2xl font-semibold"><%= @user.full_name_kanji %></p>
+      <p class="text-2xl text-gray-600 ml-4"><%= @user.full_name_eng %></p>
+    </div>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Avatar Section -->
       <div class="card bg-base-100 shadow-lg">
         <div class="card-body">
-          <h2 class="card-title mb-4">プロフィール画像</h2>
-          
+          <h2 class="card-title mx-auto">アバター</h2>
           <div class="flex flex-col items-center space-y-4">
             <div class="avatar">
-              <div class="w-32 h-32 rounded-full">
+              <div class="w-64 h-64 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center">
                 <% if @user.avatar.attached? %>
-                  <%= image_tag @user.avatar, class: "w-full h-full object-cover rounded-full" %>
+                  <%= image_tag @user.avatar.variant(resize_to_limit: [128, 128]), 
+                      alt: "#{@user.full_name_kanji}のアバター",
+                      class: "w-full h-full object-cover",
+                      loading: "lazy" %>
                 <% else %>
-                  <div class="bg-gray-300 w-full h-full rounded-full flex items-center justify-center">
-                    <span class="text-gray-600 text-xl"><%= @user.full_name_kanji.first %></span>
+                  <div class="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center"
+                       role="img"
+                       aria-label="<%= @user.full_name_kanji.first %>">
+                    <span class="text-white text-2xl font-semibold">
+                      <%= @user.full_name_kanji.first %>
+                    </span>
                   </div>
                 <% end %>
               </div>
             </div>
-            
             <%= form_with model: @user, url: settings_path, method: :patch, local: true, multipart: true do |form| %>
-              <div class="form-control w-full max-w-xs">
-                <label class="label">
-                  <span class="label-text">新しい画像を選択</span>
-                </label>
-                <%= form.file_field :avatar, accept: "image/*", class: "file-input file-input-bordered w-full max-w-xs" %>
-              </div>
-              <div class="card-actions justify-center">
-                <%= form.submit "画像を更新", class: "btn btn-primary" %>
+              <div class="form-control w-full max-w-xs flex">
+                <%= form.file_field :avatar, accept: "image/jpeg,image/png", class: "file-input file-input-borderedw-full max-w-xs" %>                <%= form.submit "更新", class: "btn btn-neutral" %>
               </div>
             <% end %>
           </div>
         </div>
       </div>
-
       <!-- Password Section -->
       <div class="card bg-base-100 shadow-lg">
         <div class="card-body">
-          <h2 class="card-title mb-4">パスワード変更</h2>
-          
+          <h2 class="card-title mx-auto">パスワード変更</h2>
           <%= form_with model: @user, url: settings_path, method: :patch, local: true do |form| %>
             <div class="space-y-4">
               <div class="form-control">
@@ -61,8 +59,7 @@
                 </label>
                 <%= form.password_field :current_password, class: "input input-bordered w-full", required: true %>
               </div>
-              
-              <div class="form-control">
+              <div class="form-control mt-8">
                 <label class="label">
                   <span class="label-text">新しいパスワード</span>
                 </label>
@@ -71,48 +68,58 @@
                   <span class="label-text-alt">8文字以上で入力してください</span>
                 </label>
               </div>
-              
               <div class="form-control">
                 <label class="label">
                   <span class="label-text">新しいパスワード（確認）</span>
                 </label>
                 <%= form.password_field :password_confirmation, class: "input input-bordered w-full", required: true %>
               </div>
-              
               <div class="card-actions justify-end">
-                <%= form.submit "パスワードを更新", class: "btn btn-secondary" %>
+                <%= form.submit "変更", class: "btn btn-neutral" %>
               </div>
             </div>
           <% end %>
         </div>
       </div>
-    </div>
-
-    <!-- User Information Display -->
-    <div class="card bg-base-100 shadow-lg mt-8">
-      <div class="card-body">
-        <h2 class="card-title mb-4">ユーザー情報</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="label">
-              <span class="label-text font-semibold">氏名（漢字）</span>
-            </label>
-            <p class="text-lg"><%= @user.full_name_kanji %></p>
-          </div>
-          <div>
-            <label class="label">
-              <span class="label-text font-semibold">氏名（英語）</span>
-            </label>
-            <p class="text-lg"><%= @user.full_name_eng %></p>
-          </div>
-          <div>
-            <label class="label">
-              <span class="label-text font-semibold">メールアドレス</span>
-            </label>
-            <p class="text-lg"><%= @user.email_address %></p>
-          </div>
+      <!-- User Invitation Section -->
+      <div class="card bg-base-100 shadow-lg">
+        <div class="card-body">
+          <h2 class="card-title mx-auto">ユーザー招待</h2>
+          <%= form_with model: @user_invitation, url: user_invitations_path, local: true do |form| %>
+            <div class="space-y-4">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">招待するメールアドレス</span>
+                </label>
+                <%= form.email_field :email_address, class: "input input-bordered w-full", placeholder: "example@email.com", required: true %>
+                <% if @user_invitation.errors[:email_address].any? %>
+                  <label class="label">
+                    <span class="label-text-alt text-error"><%= @user_invitation.errors[:email_address].first %></span>
+                  </label>
+                <% end %>
+              </div>
+              <div class="card-actions justify-end">
+                <%= form.submit "招待を送信", class: "btn btn-primary" %>
+              </div>
+            </div>
+          <% end %>
+          <% if @pending_invitations.any? %>
+            <div class="divider">送信済み招待</div>
+            <div class="space-y-2">
+              <% @pending_invitations.each do |invitation| %>
+                <div class="flex justify-between items-center p-3 bg-base-200 rounded-lg">
+                  <div>
+                    <p class="font-medium"><%= invitation.email_address %></p>
+                    <p class="text-sm text-gray-500">送信日: <%= invitation.invited_at.strftime("%Y/%m/%d %H:%M") %></p>
+                  </div>
+                  <div class="badge badge-warning">招待中</div>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
         </div>
       </div>
     </div>
+    <%= button_to "ログアウト", session_path, method: :delete, class: "cursor-pointer", data: { confirm: "本当にログアウトしますか？" } %>
   </div>
 </div>

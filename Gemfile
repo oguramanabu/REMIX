@@ -40,7 +40,7 @@ gem "kamal", require: false
 gem "thruster", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-# gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 1.2"
 
 group :development, :test do
   gem "hotwire-spark"
@@ -58,8 +58,8 @@ group :development, :test do
 end
 
 group :development do
-gem "rails-erd"
-gem "letter_opener_web"
+  gem "rails-erd"
+  gem "letter_opener_web"
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
 end
