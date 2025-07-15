@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
+  resource :settings, only: [ :show, :update ]
+  resources :orders
+  get "fab" => "fab#index"
+  get "delivery" => "delivery#index"
+  get "relations" => "relations#index"
 
   # Letter opener for development email preview
   if Rails.env.development?

@@ -1,0 +1,262 @@
+<div class="p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">関係各社管理</h1>
+    <button class="btn btn-primary">新規登録</button>
+  </div>
+
+  <!-- サマリー -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <div class="stat">
+          <div class="stat-title">取引先</div>
+          <div class="stat-value text-primary">24</div>
+          <div class="stat-desc">アクティブ</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <div class="stat">
+          <div class="stat-title">サプライヤー</div>
+          <div class="stat-value text-success">18</div>
+          <div class="stat-desc">提携中</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <div class="stat">
+          <div class="stat-title">物流パートナー</div>
+          <div class="stat-value text-info">8</div>
+          <div class="stat-desc">契約中</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <div class="stat">
+          <div class="stat-title">新規問合せ</div>
+          <div class="stat-value text-warning">3</div>
+          <div class="stat-desc">今月</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- フィルター -->
+  <div class="card bg-white shadow mb-6">
+    <div class="card-body">
+      <div class="flex flex-wrap gap-4 items-center">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">カテゴリ</span>
+          </label>
+          <select class="select select-bordered select-sm">
+            <option>すべて</option>
+            <option>顧客</option>
+            <option>サプライヤー</option>
+            <option>物流パートナー</option>
+            <option>その他</option>
+          </select>
+        </div>
+        
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">地域</span>
+          </label>
+          <select class="select select-bordered select-sm">
+            <option>すべて</option>
+            <option>関東</option>
+            <option>関西</option>
+            <option>中部</option>
+            <option>九州</option>
+          </select>
+        </div>
+        
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">検索</span>
+          </label>
+          <input type="text" placeholder="会社名で検索" class="input input-bordered input-sm" />
+        </div>
+        
+        <button class="btn btn-sm btn-primary self-end">検索</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 関係各社一覧 -->
+  <div class="card bg-white shadow mb-6">
+    <div class="card-body">
+      <h2 class="card-title text-lg mb-4">関係各社一覧</h2>
+      
+      <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+          <thead>
+            <tr class="bg-gray-50">
+              <th class="font-semibold text-gray-900">会社名</th>
+              <th class="font-semibold text-gray-900">カテゴリ</th>
+              <th class="font-semibold text-gray-900">担当者</th>
+              <th class="font-semibold text-gray-900">連絡先</th>
+              <th class="font-semibold text-gray-900">所在地</th>
+              <th class="font-semibold text-gray-900">取引開始</th>
+              <th class="font-semibold text-gray-900">ステータス</th>
+              <th class="font-semibold text-gray-900">アクション</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="font-medium">トヨタ自動車株式会社</td>
+              <td><span class="badge badge-primary">顧客</span></td>
+              <td>田中 太郎</td>
+              <td>03-1234-5678</td>
+              <td>愛知県豊田市</td>
+              <td>2020/04/01</td>
+              <td><span class="badge badge-success">アクティブ</span></td>
+              <td>
+                <div class="flex space-x-1">
+                  <button class="btn btn-xs btn-outline">詳細</button>
+                  <button class="btn btn-xs btn-primary">編集</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="font-medium">日産自動車株式会社</td>
+              <td><span class="badge badge-primary">顧客</span></td>
+              <td>佐藤 花子</td>
+              <td>045-987-6543</td>
+              <td>神奈川県横浜市</td>
+              <td>2019/06/15</td>
+              <td><span class="badge badge-success">アクティブ</span></td>
+              <td>
+                <div class="flex space-x-1">
+                  <button class="btn btn-xs btn-outline">詳細</button>
+                  <button class="btn btn-xs btn-primary">編集</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="font-medium">ABC部品製造株式会社</td>
+              <td><span class="badge badge-secondary">サプライヤー</span></td>
+              <td>山田 次郎</td>
+              <td>06-5555-1111</td>
+              <td>大阪府大阪市</td>
+              <td>2021/02/10</td>
+              <td><span class="badge badge-success">アクティブ</span></td>
+              <td>
+                <div class="flex space-x-1">
+                  <button class="btn btn-xs btn-outline">詳細</button>
+                  <button class="btn btn-xs btn-primary">編集</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="font-medium">田中運輸株式会社</td>
+              <td><span class="badge badge-accent">物流</span></td>
+              <td>鈴木 一郎</td>
+              <td>03-7777-8888</td>
+              <td>東京都港区</td>
+              <td>2018/12/01</td>
+              <td><span class="badge badge-success">アクティブ</span></td>
+              <td>
+                <div class="flex space-x-1">
+                  <button class="btn btn-xs btn-outline">詳細</button>
+                  <button class="btn btn-xs btn-primary">編集</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="font-medium">XYZ工業株式会社</td>
+              <td><span class="badge badge-secondary">サプライヤー</span></td>
+              <td>高橋 美子</td>
+              <td>052-3333-4444</td>
+              <td>愛知県名古屋市</td>
+              <td>2022/08/20</td>
+              <td><span class="badge badge-warning">審査中</span></td>
+              <td>
+                <div class="flex space-x-1">
+                  <button class="btn btn-xs btn-outline">詳細</button>
+                  <button class="btn btn-xs btn-warning">審査</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 最近の活動 -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <h2 class="card-title text-lg mb-4">最近の活動</h2>
+        
+        <div class="space-y-4">
+          <div class="flex items-start space-x-3">
+            <div class="badge badge-sm badge-primary mt-1">新規</div>
+            <div class="flex-1">
+              <div class="font-medium">XYZ工業株式会社</div>
+              <div class="text-sm text-gray-500">新規サプライヤー登録</div>
+              <div class="text-xs text-gray-400">2025/07/14</div>
+            </div>
+          </div>
+          
+          <div class="flex items-start space-x-3">
+            <div class="badge badge-sm badge-success mt-1">更新</div>
+            <div class="flex-1">
+              <div class="font-medium">田中運輸株式会社</div>
+              <div class="text-sm text-gray-500">契約条件更新</div>
+              <div class="text-xs text-gray-400">2025/07/13</div>
+            </div>
+          </div>
+          
+          <div class="flex items-start space-x-3">
+            <div class="badge badge-sm badge-warning mt-1">注意</div>
+            <div class="flex-1">
+              <div class="font-medium">ABC部品製造株式会社</div>
+              <div class="text-sm text-gray-500">納期遅延報告</div>
+              <div class="text-xs text-gray-400">2025/07/12</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <h2 class="card-title text-lg mb-4">重要な連絡先</h2>
+        
+        <div class="space-y-4">
+          <div class="flex justify-between items-center">
+            <div>
+              <div class="font-medium">緊急時サポート</div>
+              <div class="text-sm text-gray-500">24時間対応</div>
+            </div>
+            <button class="btn btn-sm btn-outline">連絡</button>
+          </div>
+          
+          <div class="flex justify-between items-center">
+            <div>
+              <div class="font-medium">品質管理部門</div>
+              <div class="text-sm text-gray-500">平日 9:00-18:00</div>
+            </div>
+            <button class="btn btn-sm btn-outline">連絡</button>
+          </div>
+          
+          <div class="flex justify-between items-center">
+            <div>
+              <div class="font-medium">物流調整センター</div>
+              <div class="text-sm text-gray-500">平日 8:00-20:00</div>
+            </div>
+            <button class="btn btn-sm btn-outline">連絡</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

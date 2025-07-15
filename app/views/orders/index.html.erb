@@ -1,0 +1,97 @@
+<div class="p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">オーダー管理</h1>
+    <%= link_to "新規オーダー", new_order_path, class: "btn btn-primary" %>
+  </div>
+
+  <div class="overflow-x-auto bg-white rounded-lg shadow">
+    <table class="table table-zebra w-full">
+      <thead>
+        <tr class="bg-gray-50">
+          <th class="font-semibold text-gray-900">オーダー番号</th>
+          <th class="font-semibold text-gray-900">クライアント</th>
+          <th class="font-semibold text-gray-900">工場</th>
+          <th class="font-semibold text-gray-900">注文日</th>
+          <th class="font-semibold text-gray-900">出荷日</th>
+          <th class="font-semibold text-gray-900">納期</th>
+          <th class="font-semibold text-gray-900">担当者</th>
+          <th class="font-semibold text-gray-900">アイテム数</th>
+          <th class="font-semibold text-gray-900">合計金額</th>
+          <th class="font-semibold text-gray-900">ステータス</th>
+          <th class="font-semibold text-gray-900">アクション</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @orders.each do |order| %>
+          <tr class="hover:bg-gray-50">
+            <td class="font-medium">
+              <%= link_to "##{order.id}", order_path(order), class: "link link-primary" %>
+            </td>
+            <td><%= order.client %></td>
+            <td><%= order.factory_name %></td>
+            <td><%= order.order_date&.strftime("%Y/%m/%d") %></td>
+            <td>
+              <% if order.shipping_date %>
+                <%= order.shipping_date.strftime("%Y/%m/%d") %>
+              <% else %>
+                <span class="text-gray-400">未定</span>
+              <% end %>
+            </td>
+            <td>
+              <% if order.delivery_date %>
+                <%= order.delivery_date.strftime("%Y/%m/%d") %>
+              <% else %>
+                <span class="text-gray-400">未定</span>
+              <% end %>
+            </td>
+            <td>
+              <% if order.users.any? %>
+                <div class="flex flex-wrap gap-1">
+                  <% order.users.limit(2).each do |user| %>
+                    <span class="badge badge-sm badge-outline">
+                      <%= user.family_name_kanji %>
+                    </span>
+                  <% end %>
+                  <% if order.users.count > 2 %>
+                    <span class="badge badge-sm badge-ghost">+<%= order.users.count - 2 %></span>
+                  <% end %>
+                </div>
+              <% else %>
+                <span class="text-gray-400">未割当</span>
+              <% end %>
+            </td>
+            <td>
+              <span class="badge badge-outline"><%= order.order_items.count %>件</span>
+            </td>
+            <td class="font-medium">
+              ¥<%= number_with_delimiter(order.order_items.sum { |item| item.total_price }) %>
+            </td>
+            <td>
+              <% if order.delivery_date && order.delivery_date < Date.current %>
+                <span class="badge badge-success">完了</span>
+              <% elsif order.shipping_date && order.shipping_date <= Date.current %>
+                <span class="badge badge-warning">出荷済み</span>
+              <% else %>
+                <span class="badge badge-info">処理中</span>
+              <% end %>
+            </td>
+            <td>
+              <div class="flex space-x-1">
+                <%= link_to "詳細", order_path(order), class: "btn btn-xs btn-outline" %>
+                <%= link_to "編集", edit_order_path(order), class: "btn btn-xs btn-primary" %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    
+    <% if @orders.empty? %>
+      <div class="text-center py-12">
+        <div class="text-gray-400 text-lg mb-2">📦</div>
+        <p class="text-gray-500">オーダーがまだありません</p>
+        <%= link_to "最初のオーダーを作成", new_order_path, class: "btn btn-primary mt-4" %>
+      </div>
+    <% end %>
+  </div>
+</div>

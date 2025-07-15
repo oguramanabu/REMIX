@@ -1,6 +1,10 @@
 class User < ApplicationRecord
   has_secure_password
+  has_one_attached :avatar
   has_many :sessions, dependent: :destroy
+  has_many :created_orders, class_name: "Order", foreign_key: "creator_id", dependent: :destroy
+  has_many :order_users, dependent: :destroy
+  has_many :orders, through: :order_users
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
@@ -8,4 +12,12 @@ class User < ApplicationRecord
   validates :given_name_eng, presence: true
   validates :family_name_kanji, presence: true
   validates :given_name_kanji, presence: true
+
+  def full_name_kanji
+    "#{family_name_kanji} #{given_name_kanji}"
+  end
+
+  def full_name_eng
+    "#{given_name_eng} #{family_name_eng}"
+  end
 end

@@ -1,0 +1,195 @@
+<div class="p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">デリバリー管理</h1>
+    <button class="btn btn-primary">新規配送計画</button>
+  </div>
+
+  <!-- 配送状況サマリー -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <div class="stat">
+          <div class="stat-title">配送中</div>
+          <div class="stat-value text-primary">12</div>
+          <div class="stat-desc">進行中の配送</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <div class="stat">
+          <div class="stat-title">本日完了</div>
+          <div class="stat-value text-success">28</div>
+          <div class="stat-desc">配送完了</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <div class="stat">
+          <div class="stat-title">遅延</div>
+          <div class="stat-value text-warning">2</div>
+          <div class="stat-desc">要対応</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <div class="stat">
+          <div class="stat-title">配送率</div>
+          <div class="stat-value text-info">94%</div>
+          <div class="stat-desc">定時配送率</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 配送スケジュール -->
+  <div class="card bg-white shadow mb-6">
+    <div class="card-body">
+      <h2 class="card-title text-lg mb-4">配送スケジュール</h2>
+      
+      <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+          <thead>
+            <tr class="bg-gray-50">
+              <th class="font-semibold text-gray-900">配送番号</th>
+              <th class="font-semibold text-gray-900">顧客</th>
+              <th class="font-semibold text-gray-900">配送先</th>
+              <th class="font-semibold text-gray-900">配送予定日</th>
+              <th class="font-semibold text-gray-900">ドライバー</th>
+              <th class="font-semibold text-gray-900">ステータス</th>
+              <th class="font-semibold text-gray-900">追跡</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="font-medium">#D-2501</td>
+              <td>トヨタ自動車</td>
+              <td>愛知工場</td>
+              <td>2025/07/15 14:00</td>
+              <td>田中運輸</td>
+              <td><span class="badge badge-warning">配送中</span></td>
+              <td>
+                <button class="btn btn-xs btn-outline">追跡</button>
+              </td>
+            </tr>
+            <tr>
+              <td class="font-medium">#D-2502</td>
+              <td>日産自動車</td>
+              <td>横浜工場</td>
+              <td>2025/07/15 16:30</td>
+              <td>佐藤物流</td>
+              <td><span class="badge badge-success">完了</span></td>
+              <td>
+                <button class="btn btn-xs btn-outline">詳細</button>
+              </td>
+            </tr>
+            <tr>
+              <td class="font-medium">#D-2503</td>
+              <td>ホンダ技研工業</td>
+              <td>埼玉工場</td>
+              <td>2025/07/16 10:00</td>
+              <td>山田配送</td>
+              <td><span class="badge badge-info">準備中</span></td>
+              <td>
+                <button class="btn btn-xs btn-outline">編集</button>
+              </td>
+            </tr>
+            <tr>
+              <td class="font-medium">#D-2504</td>
+              <td>マツダ</td>
+              <td>広島本社工場</td>
+              <td>2025/07/15 09:00</td>
+              <td>中国運輸</td>
+              <td><span class="badge badge-error">遅延</span></td>
+              <td>
+                <button class="btn btn-xs btn-error">対応</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 配送エリア別状況 -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <h2 class="card-title text-lg mb-4">エリア別配送状況</h2>
+        
+        <div class="space-y-4">
+          <div class="flex justify-between items-center">
+            <span>関東エリア</span>
+            <div class="flex items-center space-x-2">
+              <progress class="progress progress-primary w-24" value="85" max="100"></progress>
+              <span class="text-sm">85%</span>
+            </div>
+          </div>
+          <div class="flex justify-between items-center">
+            <span>関西エリア</span>
+            <div class="flex items-center space-x-2">
+              <progress class="progress progress-success w-24" value="92" max="100"></progress>
+              <span class="text-sm">92%</span>
+            </div>
+          </div>
+          <div class="flex justify-between items-center">
+            <span>中部エリア</span>
+            <div class="flex items-center space-x-2">
+              <progress class="progress progress-warning w-24" value="78" max="100"></progress>
+              <span class="text-sm">78%</span>
+            </div>
+          </div>
+          <div class="flex justify-between items-center">
+            <span>九州エリア</span>
+            <div class="flex items-center space-x-2">
+              <progress class="progress progress-info w-24" value="88" max="100"></progress>
+              <span class="text-sm">88%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <h2 class="card-title text-lg mb-4">配送パートナー</h2>
+        
+        <div class="space-y-4">
+          <div class="flex justify-between items-center">
+            <div>
+              <div class="font-medium">田中運輸</div>
+              <div class="text-sm text-gray-500">配送中: 3件</div>
+            </div>
+            <span class="badge badge-success">優良</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <div>
+              <div class="font-medium">佐藤物流</div>
+              <div class="text-sm text-gray-500">配送中: 2件</div>
+            </div>
+            <span class="badge badge-success">優良</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <div>
+              <div class="font-medium">山田配送</div>
+              <div class="text-sm text-gray-500">配送中: 4件</div>
+            </div>
+            <span class="badge badge-info">標準</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <div>
+              <div class="font-medium">中国運輸</div>
+              <div class="text-sm text-gray-500">配送中: 1件 (遅延)</div>
+            </div>
+            <span class="badge badge-warning">注意</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

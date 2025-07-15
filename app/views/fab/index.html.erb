@@ -1,0 +1,157 @@
+<div class="p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">生産管理</h1>
+    <button class="btn btn-primary">新規生産計画</button>
+  </div>
+
+  <!-- 生産状況サマリー -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <div class="stat">
+          <div class="stat-title">生産中</div>
+          <div class="stat-value text-primary">8</div>
+          <div class="stat-desc">アクティブなライン</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <div class="stat">
+          <div class="stat-title">完了予定</div>
+          <div class="stat-value text-success">15</div>
+          <div class="stat-desc">今週中</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <div class="stat">
+          <div class="stat-title">遅延</div>
+          <div class="stat-value text-warning">3</div>
+          <div class="stat-desc">要注意案件</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <div class="stat">
+          <div class="stat-title">稼働率</div>
+          <div class="stat-value text-info">87%</div>
+          <div class="stat-desc">全工場平均</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 生産ライン状況 -->
+  <div class="card bg-white shadow mb-6">
+    <div class="card-body">
+      <h2 class="card-title text-lg mb-4">生産ライン状況</h2>
+      
+      <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+          <thead>
+            <tr class="bg-gray-50">
+              <th class="font-semibold text-gray-900">ライン</th>
+              <th class="font-semibold text-gray-900">製品</th>
+              <th class="font-semibold text-gray-900">進捗</th>
+              <th class="font-semibold text-gray-900">予定完了</th>
+              <th class="font-semibold text-gray-900">ステータス</th>
+              <th class="font-semibold text-gray-900">担当者</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="font-medium">ライン A-1</td>
+              <td>エンジン部品A</td>
+              <td>
+                <div class="flex items-center space-x-2">
+                  <progress class="progress progress-primary w-20" value="75" max="100"></progress>
+                  <span class="text-sm">75%</span>
+                </div>
+              </td>
+              <td>2025/07/20</td>
+              <td><span class="badge badge-success">順調</span></td>
+              <td>小椋</td>
+            </tr>
+            <tr>
+              <td class="font-medium">ライン B-2</td>
+              <td>ブレーキパッド</td>
+              <td>
+                <div class="flex items-center space-x-2">
+                  <progress class="progress progress-warning w-20" value="45" max="100"></progress>
+                  <span class="text-sm">45%</span>
+                </div>
+              </td>
+              <td>2025/07/18</td>
+              <td><span class="badge badge-warning">遅延注意</span></td>
+              <td>小林</td>
+            </tr>
+            <tr>
+              <td class="font-medium">ライン C-3</td>
+              <td>タイヤホイール</td>
+              <td>
+                <div class="flex items-center space-x-2">
+                  <progress class="progress progress-primary w-20" value="90" max="100"></progress>
+                  <span class="text-sm">90%</span>
+                </div>
+              </td>
+              <td>2025/07/16</td>
+              <td><span class="badge badge-success">順調</span></td>
+              <td>小椋</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 品質管理 -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <h2 class="card-title text-lg mb-4">品質管理</h2>
+        
+        <div class="space-y-4">
+          <div class="flex justify-between items-center">
+            <span>不良品率</span>
+            <span class="badge badge-success">0.8%</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span>検査済み</span>
+            <span class="font-medium">1,250 / 1,280</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span>再検査要</span>
+            <span class="badge badge-warning">12件</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <h2 class="card-title text-lg mb-4">機械メンテナンス</h2>
+        
+        <div class="space-y-4">
+          <div class="flex justify-between items-center">
+            <span>予定メンテナンス</span>
+            <span class="badge badge-info">3台</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span>緊急修理</span>
+            <span class="badge badge-error">1台</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span>稼働中</span>
+            <span class="font-medium">15 / 19台</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

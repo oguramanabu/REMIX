@@ -1,0 +1,118 @@
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="max-w-4xl mx-auto px-6">
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">設定</h1>
+    
+    <% if alert = flash[:alert] %>
+      <div class="alert alert-error mb-6">
+        <span><%= alert %></span>
+      </div>
+    <% end %>
+    
+    <% if notice = flash[:notice] %>
+      <div class="alert alert-success mb-6">
+        <span><%= notice %></span>
+      </div>
+    <% end %>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Avatar Section -->
+      <div class="card bg-base-100 shadow-lg">
+        <div class="card-body">
+          <h2 class="card-title mb-4">プロフィール画像</h2>
+          
+          <div class="flex flex-col items-center space-y-4">
+            <div class="avatar">
+              <div class="w-32 h-32 rounded-full">
+                <% if @user.avatar.attached? %>
+                  <%= image_tag @user.avatar, class: "w-full h-full object-cover rounded-full" %>
+                <% else %>
+                  <div class="bg-gray-300 w-full h-full rounded-full flex items-center justify-center">
+                    <span class="text-gray-600 text-xl"><%= @user.full_name_kanji.first %></span>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+            
+            <%= form_with model: @user, url: settings_path, method: :patch, local: true, multipart: true do |form| %>
+              <div class="form-control w-full max-w-xs">
+                <label class="label">
+                  <span class="label-text">新しい画像を選択</span>
+                </label>
+                <%= form.file_field :avatar, accept: "image/*", class: "file-input file-input-bordered w-full max-w-xs" %>
+              </div>
+              <div class="card-actions justify-center">
+                <%= form.submit "画像を更新", class: "btn btn-primary" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Password Section -->
+      <div class="card bg-base-100 shadow-lg">
+        <div class="card-body">
+          <h2 class="card-title mb-4">パスワード変更</h2>
+          
+          <%= form_with model: @user, url: settings_path, method: :patch, local: true do |form| %>
+            <div class="space-y-4">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">現在のパスワード</span>
+                </label>
+                <%= form.password_field :current_password, class: "input input-bordered w-full", required: true %>
+              </div>
+              
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">新しいパスワード</span>
+                </label>
+                <%= form.password_field :password, class: "input input-bordered w-full", minlength: 8, required: true %>
+                <label class="label">
+                  <span class="label-text-alt">8文字以上で入力してください</span>
+                </label>
+              </div>
+              
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">新しいパスワード（確認）</span>
+                </label>
+                <%= form.password_field :password_confirmation, class: "input input-bordered w-full", required: true %>
+              </div>
+              
+              <div class="card-actions justify-end">
+                <%= form.submit "パスワードを更新", class: "btn btn-secondary" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Information Display -->
+    <div class="card bg-base-100 shadow-lg mt-8">
+      <div class="card-body">
+        <h2 class="card-title mb-4">ユーザー情報</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="label">
+              <span class="label-text font-semibold">氏名（漢字）</span>
+            </label>
+            <p class="text-lg"><%= @user.full_name_kanji %></p>
+          </div>
+          <div>
+            <label class="label">
+              <span class="label-text font-semibold">氏名（英語）</span>
+            </label>
+            <p class="text-lg"><%= @user.full_name_eng %></p>
+          </div>
+          <div>
+            <label class="label">
+              <span class="label-text font-semibold">メールアドレス</span>
+            </label>
+            <p class="text-lg"><%= @user.email_address %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

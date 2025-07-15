@@ -1,0 +1,141 @@
+<div class="p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">オーダー詳細 #<%= @order.id %></h1>
+    <div class="space-x-2">
+      <%= link_to "編集", edit_order_path(@order), class: "btn btn-primary" %>
+      <%= link_to "戻る", orders_path, class: "btn btn-outline" %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- 基本情報 -->
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <h2 class="card-title text-lg mb-4">基本情報</h2>
+        
+        <div class="space-y-3">
+          <div>
+            <span class="font-semibold text-gray-600">クライアント:</span>
+            <span class="ml-2"><%= @order.client %></span>
+          </div>
+          
+          <div>
+            <span class="font-semibold text-gray-600">工場:</span>
+            <span class="ml-2"><%= @order.factory_name %></span>
+          </div>
+          
+          <div>
+            <span class="font-semibold text-gray-600">注文日:</span>
+            <span class="ml-2"><%= @order.order_date&.strftime("%Y年%m月%d日") %></span>
+          </div>
+          
+          <div>
+            <span class="font-semibold text-gray-600">出荷予定日:</span>
+            <span class="ml-2">
+              <%= @order.shipping_date&.strftime("%Y年%m月%d日") || "未定" %>
+            </span>
+          </div>
+          
+          <div>
+            <span class="font-semibold text-gray-600">納期:</span>
+            <span class="ml-2">
+              <%= @order.delivery_date&.strftime("%Y年%m月%d日") || "未定" %>
+            </span>
+          </div>
+          
+          <div>
+            <span class="font-semibold text-gray-600">作成者:</span>
+            <span class="ml-2"><%= @order.creator.full_name_kanji %></span>
+          </div>
+          
+          <div>
+            <span class="font-semibold text-gray-600">ステータス:</span>
+            <span class="ml-2">
+              <% if @order.delivery_date && @order.delivery_date < Date.current %>
+                <span class="badge badge-success">完了</span>
+              <% elsif @order.shipping_date && @order.shipping_date <= Date.current %>
+                <span class="badge badge-warning">出荷済み</span>
+              <% else %>
+                <span class="badge badge-info">処理中</span>
+              <% end %>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 担当者 -->
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <h2 class="card-title text-lg mb-4">担当者</h2>
+        
+        <% if @order.users.any? %>
+          <div class="space-y-2">
+            <% @order.users.each do |user| %>
+              <div class="flex items-center space-x-3">
+                <div class="avatar placeholder">
+                  <div class="bg-neutral text-neutral-content rounded-full w-8">
+                    <span class="text-xs"><%= user.family_name_kanji[0] %></span>
+                  </div>
+                </div>
+                <div>
+                  <div class="font-medium"><%= user.full_name_kanji %></div>
+                  <div class="text-sm text-gray-500"><%= user.full_name_eng %></div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-gray-500">担当者が設定されていません</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- オーダーアイテム -->
+  <div class="card bg-white shadow mt-6">
+    <div class="card-body">
+      <h2 class="card-title text-lg mb-4">オーダーアイテム</h2>
+      
+      <% if @order.order_items.any? %>
+        <div class="overflow-x-auto">
+          <table class="table table-zebra w-full">
+            <thead>
+              <tr>
+                <th>アイテム名</th>
+                <th>数量</th>
+                <th>単価</th>
+                <th>小計</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @order.order_items.each do |item| %>
+                <tr>
+                  <td><%= item.name %></td>
+                  <td><%= number_with_delimiter(item.quantity) %>個</td>
+                  <td>¥<%= number_with_delimiter(item.unit_price) %></td>
+                  <td class="font-medium">¥<%= number_with_delimiter(item.total_price) %></td>
+                </tr>
+              <% end %>
+            </tbody>
+            <tfoot>
+              <tr class="font-bold">
+                <th colspan="3">合計金額</th>
+                <th>¥<%= number_with_delimiter(@order.order_items.sum(&:total_price)) %></th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      <% else %>
+        <p class="text-gray-500">オーダーアイテムがありません</p>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- アクション -->
+  <div class="flex justify-end mt-6 space-x-4">
+    <%= link_to "削除", order_path(@order), method: :delete, 
+                class: "btn btn-error", 
+                data: { confirm: "本当にこのオーダーを削除しますか？" } %>
+  </div>
+</div>
