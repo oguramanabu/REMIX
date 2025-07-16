@@ -39,9 +39,13 @@
                 <% end %>
               </div>
             </div>
-            <%= form_with model: @user, url: settings_path, method: :patch, local: true, multipart: true do |form| %>
+            <%= form_with model: @user, url: settings_path, method: :patch, local: true, multipart: true, data: { controller: "avatar-form" } do |form| %>
               <div class="form-control w-full max-w-xs flex">
-                <%= form.file_field :avatar, accept: "image/jpeg,image/png", class: "file-input file-input-borderedw-full max-w-xs" %>                <%= form.submit "更新", class: "btn btn-neutral" %>
+                <%= form.file_field :avatar, accept: "image/jpeg,image/png", class: "file-input file-input-borderedw-full max-w-xs", data: { target: "avatar-form.fileInput" } %>                
+                <%= form.submit "更新", class: "btn btn-neutral", data: { action: "click->avatar-form#validateAndSubmit" } %>
+              </div>
+              <div class="alert alert-warning mt-2 hidden" data-target="avatar-form.warning">
+                <span>画像を選択してください</span>
               </div>
             <% end %>
           </div>
@@ -153,7 +157,7 @@
                   <p class="text-sm text-gray-500">送信日: <%= invitation.invited_at.strftime("%Y/%m/%d %H:%M") %></p>
                 </div>
                 <div class="flex items-center space-x-2">
-                  <div class="btn btn-outline">招待中</div>
+                  <div class="btn btn-outline btn-disabled">招待中</div>
                   <% if invitation.invited_by == Current.user %>
                     <%= button_to "キャンセル", user_invitation_path(invitation), 
                         method: :delete, 
