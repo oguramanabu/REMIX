@@ -1,6 +1,6 @@
 class OrdersController < ApplicationController
   before_action :require_authentication
-  before_action :set_order, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_order, only: [ :show, :edit, :update, :destroy, :update_file_metadata ]
 
   def index
     @orders = Order.includes(:order_items, :creator, :users).order(order_date: :desc)
@@ -20,6 +20,16 @@ class OrdersController < ApplicationController
     @order.creator = Current.user
     @users = User.all
 
+    # Clean up empty URLs
+    if params[:order][:attachment_urls].present?
+      @order.attachment_urls = params[:order][:attachment_urls].reject(&:blank?)
+    end
+
+    # Parse file metadata if present
+    if params[:order][:file_metadata].present?
+      @order.file_metadata = JSON.parse(params[:order][:file_metadata])
+    end
+
     if @order.save
       redirect_to orders_path, notice: "オーダーが正常に作成されました。"
     else
@@ -29,9 +39,20 @@ class OrdersController < ApplicationController
 
   def edit
     @users = User.all
+    @order.order_items.build if @order.order_items.empty?
   end
 
   def update
+    # Clean up empty URLs
+    if params[:order][:attachment_urls].present?
+      params[:order][:attachment_urls] = params[:order][:attachment_urls].reject(&:blank?)
+    end
+
+    # Parse file metadata if present
+    if params[:order][:file_metadata].present?
+      params[:order][:file_metadata] = JSON.parse(params[:order][:file_metadata])
+    end
+
     if @order.update(order_params)
       redirect_to order_path(@order), notice: "オーダーが正常に更新されました。"
     else
@@ -45,6 +66,25 @@ class OrdersController < ApplicationController
     redirect_to orders_path, notice: "オーダーが削除されました。"
   end
 
+  def update_file_metadata
+    original_filename = params[:original_filename]
+    new_filename = params[:new_filename]
+
+    @order.file_metadata ||= {}
+
+    if new_filename.present? && new_filename != original_filename
+      @order.file_metadata[original_filename] = new_filename
+    elsif @order.file_metadata[original_filename]
+      @order.file_metadata.delete(original_filename)
+    end
+
+    if @order.save
+      render json: { success: true, display_name: @order.file_metadata[original_filename] || original_filename }
+    else
+      render json: { success: false, error: @order.errors.full_messages.join(", ") }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def set_order
@@ -53,7 +93,8 @@ class OrdersController < ApplicationController
 
   def order_params
     params.require(:order).permit(:client, :factory_name, :order_date, :shipping_date, :delivery_date,
-                                  user_ids: [],
+                                  :file_metadata,
+                                  files: [], user_ids: [], attachment_urls: [],
                                   order_items_attributes: [ :id, :name, :quantity, :unit_price, :_destroy ])
   end
 end

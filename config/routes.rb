@@ -2,7 +2,11 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
   resource :settings, only: [ :show, :update ], as: :settings
-  resources :orders
+  resources :orders do
+    member do
+      patch :update_file_metadata
+    end
+  end
   resources :user_invitations, only: [ :create, :destroy ]
   get "activate/:token", to: "user_activations#new", as: :activate_user_invitation
   post "activate/:token", to: "user_activations#create"

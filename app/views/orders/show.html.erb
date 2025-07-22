@@ -92,6 +92,93 @@
     </div>
   </div>
 
+  <!-- 添付ファイル -->
+  <div class="card bg-white shadow mt-6">
+    <div class="card-body">
+      <h2 class="card-title text-lg mb-4">添付ファイル</h2>
+      
+      <div class="space-y-3">
+        <% if @order.files.attached? %>
+          <% @order.files.each do |file| %>
+            <div class="border rounded-lg p-4">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="flex-shrink-0">
+                  <% # Icon based on file type %>
+                  <% if file.content_type&.include?('pdf') %>
+                    <svg class="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                    </svg>
+                  <% elsif file.content_type&.include?('sheet') || file.content_type&.include?('excel') %>
+                    <svg class="w-8 h-8 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd" />
+                    </svg>
+                  <% elsif file.content_type&.include?('image') %>
+                    <svg class="w-8 h-8 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                    </svg>
+                  <% else %>
+                    <svg class="w-8 h-8 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                  <% end %>
+                </div>
+                <div class="flex-1">
+                  <div class="filename-container" data-original-filename="<%= file.filename %>">
+                    <p class="font-medium filename-display cursor-pointer hover:text-blue-600 text-lg leading-relaxed" title="クリックして編集">
+                      <%= @order.display_filename(file) %>
+                    </p>
+                    <div class="filename-edit hidden">
+                      <input type="text" class="input input-bordered w-full filename-input text-base" value="<%= @order.display_filename(file) %>">
+                      <div class="mt-2 flex gap-2">
+                        <button type="button" class="btn btn-sm btn-primary save-filename">保存</button>
+                        <button type="button" class="btn btn-sm btn-outline cancel-edit">キャンセル</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex-shrink-0">
+                  <%= link_to "ダウンロード", rails_blob_path(file, disposition: "attachment"), 
+                              class: "btn btn-sm btn-outline" %>
+                </div>
+              </div>
+              <div class="flex items-center justify-between text-sm text-gray-500 pl-11">
+                <span><%= number_to_human_size(file.byte_size) %></span>
+                <% if @order.file_metadata.present? && @order.file_metadata[file.filename.to_s] %>
+                  <span class="text-xs text-gray-400">元: <%= file.filename %></span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+
+        <% if @order.attachment_urls.present? && @order.attachment_urls.any? %>
+          <div class="border-t pt-3 mt-3">
+            <p class="font-medium text-gray-700 mb-2">関連URL:</p>
+            <% @order.attachment_urls.each do |url| %>
+              <% next if url.blank? %>
+              <div class="flex items-center justify-between p-3 border rounded-lg mb-2">
+                <div class="flex items-center space-x-3">
+                  <svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd" />
+                  </svg>
+                  <div>
+                    <p class="text-sm text-gray-700 truncate max-w-md"><%= url %></p>
+                  </div>
+                </div>
+                <%= link_to "開く", url, target: "_blank", rel: "noopener", 
+                            class: "btn btn-sm btn-outline" %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <% if !@order.files.attached? && (@order.attachment_urls.blank? || @order.attachment_urls.empty?) %>
+          <p class="text-gray-500">添付ファイルはありません</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
   <!-- オーダーアイテム -->
   <div class="card bg-white shadow mt-6">
     <div class="card-body">
@@ -134,8 +221,115 @@
 
   <!-- アクション -->
   <div class="flex justify-end mt-6 space-x-4">
-    <%= link_to "削除", order_path(@order), method: :delete, 
-                class: "btn btn-error", 
-                data: { confirm: "本当にこのオーダーを削除しますか？" } %>
+    <%= button_to "削除", order_path(@order), 
+                  method: :delete, 
+                  class: "btn btn-error", 
+                  data: { confirm: "本当にこのオーダーを削除しますか？" } %>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const csrfToken = document.querySelector('[name="csrf-token"]').content;
+  
+  // Handle filename clicks
+  document.querySelectorAll('.filename-display').forEach(function(element) {
+    element.addEventListener('click', function() {
+      const container = this.closest('.filename-container');
+      const editDiv = container.querySelector('.filename-edit');
+      const input = container.querySelector('.filename-input');
+      
+      this.classList.add('hidden');
+      editDiv.classList.remove('hidden');
+      input.focus();
+      input.select();
+    });
+  });
+  
+  // Handle save button
+  document.querySelectorAll('.save-filename').forEach(function(button) {
+    button.addEventListener('click', function() {
+      const container = this.closest('.filename-container');
+      const input = container.querySelector('.filename-input');
+      const display = container.querySelector('.filename-display');
+      const editDiv = container.querySelector('.filename-edit');
+      const originalFilename = container.dataset.originalFilename;
+      const newFilename = input.value.trim();
+      
+      // Disable buttons during save
+      button.disabled = true;
+      container.querySelector('.cancel-edit').disabled = true;
+      
+      fetch('<%= update_file_metadata_order_path(@order) %>', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken
+        },
+        body: JSON.stringify({
+          original_filename: originalFilename,
+          new_filename: newFilename
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          display.textContent = data.display_name;
+          editDiv.classList.add('hidden');
+          display.classList.remove('hidden');
+          
+          // Update the "元:" text if needed
+          const originalText = container.closest('div').querySelector('.text-gray-400');
+          if (data.display_name !== originalFilename) {
+            if (!originalText) {
+              const p = document.createElement('p');
+              p.className = 'text-xs text-gray-400';
+              p.textContent = '元: ' + originalFilename;
+              container.closest('div').appendChild(p);
+            }
+          } else if (originalText) {
+            originalText.remove();
+          }
+        } else {
+          alert('ファイル名の更新に失敗しました: ' + (data.error || 'Unknown error'));
+        }
+      })
+      .catch(error => {
+        alert('エラーが発生しました: ' + error);
+      })
+      .finally(() => {
+        button.disabled = false;
+        container.querySelector('.cancel-edit').disabled = false;
+      });
+    });
+  });
+  
+  // Handle cancel button
+  document.querySelectorAll('.cancel-edit').forEach(function(button) {
+    button.addEventListener('click', function() {
+      const container = this.closest('.filename-container');
+      const display = container.querySelector('.filename-display');
+      const editDiv = container.querySelector('.filename-edit');
+      const input = container.querySelector('.filename-input');
+      
+      // Reset input value
+      input.value = display.textContent.trim();
+      
+      editDiv.classList.add('hidden');
+      display.classList.remove('hidden');
+    });
+  });
+  
+  // Handle Enter and Escape keys
+  document.querySelectorAll('.filename-input').forEach(function(input) {
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        this.closest('.filename-container').querySelector('.save-filename').click();
+      } else if (e.key === 'Escape') {
+        this.closest('.filename-container').querySelector('.cancel-edit').click();
+      }
+    });
+  });
+});
+</script>
