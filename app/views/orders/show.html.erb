@@ -20,7 +20,7 @@
           </div>
           
           <div>
-            <span class="font-semibold text-gray-600">工場:</span>
+            <span class="font-semibold text-gray-600">サプライヤー:</span>
             <span class="ml-2"><%= @order.factory_name %></span>
           </div>
           
@@ -30,7 +30,7 @@
           </div>
           
           <div>
-            <span class="font-semibold text-gray-600">出荷予定日:</span>
+            <span class="font-semibold text-gray-600">ETD (出発予定日):</span>
             <span class="ml-2">
               <%= @order.shipping_date&.strftime("%Y年%m月%d日") || "未定" %>
             </span>
@@ -42,23 +42,120 @@
               <%= @order.delivery_date&.strftime("%Y年%m月%d日") || "未定" %>
             </span>
           </div>
-          
+
           <div>
-            <span class="font-semibold text-gray-600">作成者:</span>
-            <span class="ml-2"><%= @order.creator.full_name_kanji %></span>
+            <span class="font-semibold text-gray-600">推定納期:</span>
+            <span class="ml-2">
+              <%= @order.estimate_delivery_date&.strftime("%Y年%m月%d日") || "未定" %>
+            </span>
           </div>
           
           <div>
-            <span class="font-semibold text-gray-600">ステータス:</span>
+            <span class="font-semibold text-gray-600">作成者:</span>
+            <span class="ml-2"><%= @order.creator.family_name_kanji %> <%= @order.creator.given_name_kanji %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 製品情報 -->
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <h2 class="card-title text-lg mb-4">製品情報</h2>
+        
+        <div class="space-y-3">
+          <div>
+            <span class="font-semibold text-gray-600">製品コード:</span>
+            <span class="ml-2"><%= @order.item_number || "-" %></span>
+          </div>
+          
+          <div>
+            <span class="font-semibold text-gray-600">製品名:</span>
+            <span class="ml-2"><%= @order.item_name || "-" %></span>
+          </div>
+          
+          <div>
+            <span class="font-semibold text-gray-600">数量:</span>
+            <span class="ml-2"><%= @order.quantity ? "#{number_with_delimiter(@order.quantity)}個" : "-" %></span>
+          </div>
+          
+          <div>
+            <span class="font-semibold text-gray-600">貿易条件:</span>
+            <span class="ml-2"><%= @order.trade_term || "-" %></span>
+          </div>
+
+          <div>
+            <span class="font-semibold text-gray-600">輸出港:</span>
+            <span class="ml-2"><%= @order.export_port || "-" %></span>
+          </div>
+
+          <div>
+            <span class="font-semibold text-gray-600">ライセンス:</span>
+            <span class="ml-2"><%= @order.license || "-" %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 価格・財務情報 -->
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <h2 class="card-title text-lg mb-4">価格・財務情報</h2>
+        
+        <div class="space-y-3">
+          <div>
+            <span class="font-semibold text-gray-600">仕入価格 (単価):</span>
             <span class="ml-2">
-              <% if @order.delivery_date && @order.delivery_date < Date.current %>
-                <span class="badge badge-success">完了</span>
-              <% elsif @order.shipping_date && @order.shipping_date <= Date.current %>
-                <span class="badge badge-warning">出荷済み</span>
-              <% else %>
-                <span class="badge badge-info">処理中</span>
-              <% end %>
+              <%= @order.purchase_price ? "¥#{number_with_delimiter(@order.purchase_price)}" : "-" %>
             </span>
+          </div>
+          
+          <div>
+            <span class="font-semibold text-gray-600">販売価格 (単価):</span>
+            <span class="ml-2">
+              <%= @order.sell_price ? "¥#{number_with_delimiter(@order.sell_price)}" : "-" %>
+            </span>
+          </div>
+          
+          <div>
+            <span class="font-semibold text-gray-600">為替レート:</span>
+            <span class="ml-2">
+              <%= @order.exchange_rate ? "¥#{@order.exchange_rate}" : "-" %>
+            </span>
+          </div>
+
+          <div>
+            <span class="font-semibold text-gray-600">売上倍率:</span>
+            <span class="ml-2">
+              <%= @order.sales_multiple ? "#{@order.sales_multiple}倍" : "-" %>
+            </span>
+          </div>
+
+          <div class="divider"></div>
+
+          <div>
+            <span class="font-semibold text-gray-600">総仕入額:</span>
+            <span class="ml-2 font-bold text-lg">¥<%= number_with_delimiter(@order.total_purchase_amount) %></span>
+          </div>
+          
+          <div>
+            <span class="font-semibold text-gray-600">総売上額:</span>
+            <span class="ml-2 font-bold text-lg">¥<%= number_with_delimiter(@order.total_sales_amount) %></span>
+          </div>
+          
+          <div>
+            <span class="font-semibold text-gray-600">粗利益額:</span>
+            <span class="ml-2 font-bold text-lg text-green-600">¥<%= number_with_delimiter(@order.gross_profit_amount) %></span>
+          </div>
+          
+          <div>
+            <span class="font-semibold text-gray-600">粗利率:</span>
+            <span class="ml-2 font-bold text-lg text-green-600"><%= @order.gross_profit_percentage %>%</span>
+          </div>
+
+          <div>
+            <span class="font-semibold text-gray-600">マークアップ率:</span>
+            <span class="ml-2 font-bold text-lg text-blue-600"><%= @order.markup_rate %>%</span>
           </div>
         </div>
       </div>
@@ -72,225 +169,80 @@
         <% if @order.users.any? %>
           <div class="space-y-2">
             <% @order.users.each do |user| %>
-              <div class="flex items-center space-x-3">
-                <div class="avatar placeholder">
+              <div class="flex items-center p-2 bg-gray-50 rounded">
+                <div class="avatar placeholder mr-3">
                   <div class="bg-neutral text-neutral-content rounded-full w-8">
                     <span class="text-xs"><%= user.family_name_kanji[0] %></span>
                   </div>
                 </div>
-                <div>
-                  <div class="font-medium"><%= user.full_name_kanji %></div>
-                  <div class="text-sm text-gray-500"><%= user.full_name_eng %></div>
-                </div>
+                <span><%= user.family_name_kanji %> <%= user.given_name_kanji %></span>
+                <span class="text-gray-500 ml-2">(<%= user.family_name_eng %> <%= user.given_name_eng %>)</span>
               </div>
             <% end %>
           </div>
         <% else %>
-          <p class="text-gray-500">担当者が設定されていません</p>
+          <p class="text-gray-500">担当者が割り当てられていません</p>
         <% end %>
       </div>
     </div>
   </div>
 
   <!-- 添付ファイル -->
-  <div class="card bg-white shadow mt-6">
-    <div class="card-body">
-      <h2 class="card-title text-lg mb-4">添付ファイル</h2>
-      
-      <div class="space-y-3">
-        <% if @order.files.attached? %>
-          <% @order.files.each do |file| %>
-            <div class="border rounded-lg p-4">
-              <div class="flex items-center gap-3 mb-3">
-                <div class="flex-shrink-0">
-                  <% # Icon based on file type %>
-                  <% if file.content_type&.include?('pdf') %>
-                    <svg class="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+  <% if @order.files.any? || @order.attachment_urls.present? %>
+    <div class="card bg-white shadow mt-6">
+      <div class="card-body">
+        <h2 class="card-title text-lg mb-4">添付ファイル</h2>
+        
+        <!-- アップロードされたファイル -->
+        <% if @order.files.any? %>
+          <div class="mb-4">
+            <h3 class="font-medium mb-2">ファイル</h3>
+            <div class="space-y-2">
+              <% @order.files.each do |file| %>
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded border">
+                  <div class="flex items-center">
+                    <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
-                  <% elsif file.content_type&.include?('sheet') || file.content_type&.include?('excel') %>
-                    <svg class="w-8 h-8 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd" />
-                    </svg>
-                  <% elsif file.content_type&.include?('image') %>
-                    <svg class="w-8 h-8 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
-                    </svg>
-                  <% else %>
-                    <svg class="w-8 h-8 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                    </svg>
-                  <% end %>
-                </div>
-                <div class="flex-1">
-                  <div class="filename-container" data-original-filename="<%= file.filename %>">
-                    <p class="font-medium filename-display cursor-pointer hover:text-blue-600 text-lg leading-relaxed" title="クリックして編集">
-                      <%= @order.display_filename(file) %>
-                    </p>
-                    <div class="filename-edit hidden">
-                      <input type="text" class="input input-bordered w-full filename-input text-base" value="<%= @order.display_filename(file) %>">
-                      <div class="mt-2 flex gap-2">
-                        <button type="button" class="btn btn-sm btn-primary save-filename">保存</button>
-                        <button type="button" class="btn btn-sm btn-outline cancel-edit">キャンセル</button>
-                      </div>
-                    </div>
+                    <span><%= @order.display_filename(file) %></span>
                   </div>
+                  <%= link_to "ダウンロード", rails_blob_path(file, disposition: "attachment"), class: "btn btn-sm btn-outline" %>
                 </div>
-                <div class="flex-shrink-0">
-                  <%= link_to "ダウンロード", rails_blob_path(file, disposition: "attachment"), 
-                              class: "btn btn-sm btn-outline" %>
-                </div>
-              </div>
-              <div class="flex items-center justify-between text-sm text-gray-500 pl-11">
-                <span><%= number_to_human_size(file.byte_size) %></span>
-                <% if @order.file_metadata.present? && @order.file_metadata[file.filename.to_s] %>
-                  <span class="text-xs text-gray-400">元: <%= file.filename %></span>
-                <% end %>
-              </div>
+              <% end %>
             </div>
-          <% end %>
-        <% end %>
-
-        <% if @order.attachment_urls.present? && @order.attachment_urls.any? %>
-          <div class="border-t pt-3 mt-3">
-            <p class="font-medium text-gray-700 mb-2">関連URL:</p>
-            <% @order.attachment_urls.each do |url| %>
-              <% next if url.blank? %>
-              <div class="flex items-center justify-between p-3 border rounded-lg mb-2">
-                <div class="flex items-center space-x-3">
-                  <svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd" />
-                  </svg>
-                  <div>
-                    <p class="text-sm text-gray-700 truncate max-w-md"><%= url %></p>
-                  </div>
-                </div>
-                <%= link_to "開く", url, target: "_blank", rel: "noopener", 
-                            class: "btn btn-sm btn-outline" %>
-              </div>
-            <% end %>
           </div>
         <% end %>
 
-        <% if !@order.files.attached? && (@order.attachment_urls.blank? || @order.attachment_urls.empty?) %>
-          <p class="text-gray-500">添付ファイルはありません</p>
+        <!-- 関連URL -->
+        <% if @order.attachment_urls.present? %>
+          <div>
+            <h3 class="font-medium mb-2">関連URL</h3>
+            <div class="space-y-2">
+              <% @order.attachment_urls.each do |url| %>
+                <% if url.present? %>
+                  <div class="flex items-center justify-between p-3 bg-gray-50 rounded border">
+                    <div class="flex items-center">
+                      <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                      </svg>
+                      <span><%= url %></span>
+                    </div>
+                    <%= link_to "開く", url, class: "btn btn-sm btn-outline", target: "_blank", rel: "noopener" %>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
         <% end %>
       </div>
     </div>
-  </div>
-
+  <% end %>
 
   <!-- アクション -->
   <div class="flex justify-end mt-6 space-x-4">
     <%= button_to "削除", order_path(@order), 
                   method: :delete, 
-                  class: "btn btn-error", 
-                  data: { confirm: "本当にこのオーダーを削除しますか？" } %>
+                  class: "btn btn-error",
+                  form: { onsubmit: "return confirm('本当に削除しますか？')" } %>
   </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const csrfToken = document.querySelector('[name="csrf-token"]').content;
-  
-  // Handle filename clicks
-  document.querySelectorAll('.filename-display').forEach(function(element) {
-    element.addEventListener('click', function() {
-      const container = this.closest('.filename-container');
-      const editDiv = container.querySelector('.filename-edit');
-      const input = container.querySelector('.filename-input');
-      
-      this.classList.add('hidden');
-      editDiv.classList.remove('hidden');
-      input.focus();
-      input.select();
-    });
-  });
-  
-  // Handle save button
-  document.querySelectorAll('.save-filename').forEach(function(button) {
-    button.addEventListener('click', function() {
-      const container = this.closest('.filename-container');
-      const input = container.querySelector('.filename-input');
-      const display = container.querySelector('.filename-display');
-      const editDiv = container.querySelector('.filename-edit');
-      const originalFilename = container.dataset.originalFilename;
-      const newFilename = input.value.trim();
-      
-      // Disable buttons during save
-      button.disabled = true;
-      container.querySelector('.cancel-edit').disabled = true;
-      
-      fetch('<%= update_file_metadata_order_path(@order) %>', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': csrfToken
-        },
-        body: JSON.stringify({
-          original_filename: originalFilename,
-          new_filename: newFilename
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          display.textContent = data.display_name;
-          editDiv.classList.add('hidden');
-          display.classList.remove('hidden');
-          
-          // Update the "元:" text if needed
-          const originalText = container.closest('div').querySelector('.text-gray-400');
-          if (data.display_name !== originalFilename) {
-            if (!originalText) {
-              const p = document.createElement('p');
-              p.className = 'text-xs text-gray-400';
-              p.textContent = '元: ' + originalFilename;
-              container.closest('div').appendChild(p);
-            }
-          } else if (originalText) {
-            originalText.remove();
-          }
-        } else {
-          alert('ファイル名の更新に失敗しました: ' + (data.error || 'Unknown error'));
-        }
-      })
-      .catch(error => {
-        alert('エラーが発生しました: ' + error);
-      })
-      .finally(() => {
-        button.disabled = false;
-        container.querySelector('.cancel-edit').disabled = false;
-      });
-    });
-  });
-  
-  // Handle cancel button
-  document.querySelectorAll('.cancel-edit').forEach(function(button) {
-    button.addEventListener('click', function() {
-      const container = this.closest('.filename-container');
-      const display = container.querySelector('.filename-display');
-      const editDiv = container.querySelector('.filename-edit');
-      const input = container.querySelector('.filename-input');
-      
-      // Reset input value
-      input.value = display.textContent.trim();
-      
-      editDiv.classList.add('hidden');
-      display.classList.remove('hidden');
-    });
-  });
-  
-  // Handle Enter and Escape keys
-  document.querySelectorAll('.filename-input').forEach(function(input) {
-    input.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        this.closest('.filename-container').querySelector('.save-filename').click();
-      } else if (e.key === 'Escape') {
-        this.closest('.filename-container').querySelector('.cancel-edit').click();
-      }
-    });
-  });
-});
-</script>

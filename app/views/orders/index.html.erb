@@ -10,13 +10,14 @@
         <tr class="bg-gray-50">
           <th class="font-semibold text-gray-900">オーダー番号</th>
           <th class="font-semibold text-gray-900">クライアント</th>
-          <th class="font-semibold text-gray-900">工場</th>
+          <th class="font-semibold text-gray-900">製品名</th>
+          <th class="font-semibold text-gray-900">数量</th>
           <th class="font-semibold text-gray-900">注文日</th>
-          <th class="font-semibold text-gray-900">出荷日</th>
+          <th class="font-semibold text-gray-900">ETD</th>
           <th class="font-semibold text-gray-900">納期</th>
           <th class="font-semibold text-gray-900">担当者</th>
-          <th class="font-semibold text-gray-900">アイテム数</th>
-          <th class="font-semibold text-gray-900">合計金額</th>
+          <th class="font-semibold text-gray-900">売上額</th>
+          <th class="font-semibold text-gray-900">粗利益</th>
           <th class="font-semibold text-gray-900">ステータス</th>
           <th class="font-semibold text-gray-900">アクション</th>
         </tr>
@@ -28,7 +29,8 @@
               <%= link_to "##{order.id}", order_path(order), class: "link link-primary" %>
             </td>
             <td><%= order.client %></td>
-            <td><%= order.factory_name %></td>
+            <td><%= order.item_name || "-" %></td>
+            <td><%= order.quantity ? "#{number_with_delimiter(order.quantity)}個" : "-" %></td>
             <td><%= order.order_date&.strftime("%Y/%m/%d") %></td>
             <td>
               <% if order.shipping_date %>
@@ -60,11 +62,12 @@
                 <span class="text-gray-400">未割当</span>
               <% end %>
             </td>
-            <td>
-              <span class="badge badge-outline">-</span>
+            <td class="font-medium">
+              ¥<%= number_with_delimiter(order.total_sales_amount) %>
             </td>
             <td class="font-medium">
-              -
+              ¥<%= number_with_delimiter(order.gross_profit_amount) %>
+              <span class="text-sm text-gray-500">(<%= order.gross_profit_percentage %>%)</span>
             </td>
             <td>
               <% if order.delivery_date && order.delivery_date < Date.current %>

@@ -5,3 +5,9 @@
 @source "../../../app/views/**/*";
 
 @plugin "./daisyui.js";
+
+@layer base {
+  html {
+    font-size: 1.125rem; /* 18px base font size */
+  }
+}

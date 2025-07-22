@@ -91,8 +91,10 @@ class OrdersController < ApplicationController
 
   def order_params
     params.require(:order).permit(:client, :factory_name, :order_date, :shipping_date, :delivery_date,
-                                  :file_metadata,
-                                  files: [], user_ids: [], attachment_urls: [],
+                                  :item_number, :item_name, :quantity, :trade_term, :purchase_price,
+                                  :sell_price, :export_port, :estimate_delivery_date, :sales_multiple,
+                                  :exchange_rate, :license, :file_metadata,
+                                  files: [], user_ids: [], attachment_urls: []
                                   )
   end
 end
