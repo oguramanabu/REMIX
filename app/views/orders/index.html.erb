@@ -70,18 +70,21 @@
               <span class="text-sm text-gray-500">(<%= order.gross_profit_percentage %>%)</span>
             </td>
             <td>
-              <% if order.delivery_date && order.delivery_date < Date.current %>
-                <span class="badge badge-success">完了</span>
-              <% elsif order.estimate_delivery_date && order.estimate_delivery_date <= Date.current %>
-                <span class="badge badge-warning">出荷済み</span>
-              <% else %>
-                <span class="badge badge-info">処理中</span>
-              <% end %>
+              <span class="badge <%= order.status_badge_class %>"><%= order.status_label %></span>
             </td>
             <td>
               <div class="flex space-x-1">
                 <%= link_to "詳細", order_path(order), class: "btn btn-xs btn-outline" %>
                 <%= link_to "編集", edit_order_path(order), class: "btn btn-xs btn-primary" %>
+                <% if order.shareable? %>
+                  <%= link_to "共有", "#", 
+                      class: "btn btn-xs btn-info share-order-btn", 
+                      data: { 
+                        order_id: order.id,
+                        order_url: order_url(order),
+                        assigned_users: order.users.map { |u| "#{u.family_name_kanji} #{u.given_name_kanji} (#{u.email_address})" }.join(", ")
+                      } %>
+                <% end %>
               </div>
             </td>
           </tr>
@@ -98,3 +101,82 @@
     <% end %>
   </div>
 </div>
+
+<!-- Share Modal -->
+<div id="share-modal" class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">オーダーを共有</h3>
+    <p class="py-4">このオーダー（#<span id="modal-order-id"></span>）は以下の担当者と共有されています：</p>
+    
+    <div class="mb-4">
+      <p id="modal-assigned-users" class="text-sm text-gray-600"></p>
+    </div>
+
+    <div class="mb-4">
+      <label for="share-url" class="label">
+        <span class="label-text">共有用URL</span>
+      </label>
+      <div class="flex gap-2">
+        <input type="text" id="share-url" class="input input-bordered flex-1" readonly>
+        <button class="btn btn-primary" onclick="copyShareUrl()">コピー</button>
+      </div>
+      <div class="label">
+        <span class="label-text-alt">このURLを担当者に送信することでオーダーを共有できます</span>
+      </div>
+    </div>
+
+    <div class="modal-action">
+      <button class="btn" onclick="closeShareModal()">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const shareButtons = document.querySelectorAll('.share-order-btn');
+  const shareModal = document.getElementById('share-modal');
+  
+  shareButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      const orderId = this.dataset.orderId;
+      const orderUrl = this.dataset.orderUrl;
+      const assignedUsers = this.dataset.assignedUsers;
+      
+      document.getElementById('modal-order-id').textContent = orderId;
+      document.getElementById('share-url').value = orderUrl;
+      document.getElementById('modal-assigned-users').textContent = assignedUsers;
+      
+      shareModal.classList.add('modal-open');
+    });
+  });
+});
+
+function closeShareModal() {
+  document.getElementById('share-modal').classList.remove('modal-open');
+}
+
+function copyShareUrl() {
+  const shareUrl = document.getElementById('share-url');
+  shareUrl.select();
+  shareUrl.setSelectionRange(0, 99999); // For mobile devices
+  
+  try {
+    document.execCommand('copy');
+    
+    // Show success feedback
+    const copyBtn = event.target;
+    const originalText = copyBtn.textContent;
+    copyBtn.textContent = 'コピー済み!';
+    copyBtn.classList.add('btn-success');
+    
+    setTimeout(() => {
+      copyBtn.textContent = originalText;
+      copyBtn.classList.remove('btn-success');
+    }, 2000);
+  } catch (err) {
+    alert('URLのコピーに失敗しました。手動でコピーしてください。');
+  }
+}
+</script>

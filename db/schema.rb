@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_22_102955) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_22_111327) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -89,8 +89,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_102955) do
     t.integer "exchange_rate"
     t.string "license"
     t.bigint "client_id"
+    t.string "status", default: "draft", null: false
     t.index [ "client_id" ], name: "index_orders_on_client_id"
     t.index [ "creator_id" ], name: "index_orders_on_creator_id"
+    t.index [ "status" ], name: "index_orders_on_status"
   end
 
   create_table "sessions", force: :cascade do |t|

@@ -1,7 +1,21 @@
 <div class="p-6">
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-bold text-gray-900">オーダー詳細 #<%= @order.id %></h1>
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">オーダー詳細 #<%= @order.id %></h1>
+      <div class="mt-2">
+        <span class="badge <%= @order.status_badge_class %> badge-lg"><%= @order.status_label %></span>
+        <% if @order.shareable? %>
+          <span class="badge badge-info badge-sm ml-2">共有可能</span>
+        <% end %>
+      </div>
+    </div>
     <div class="space-x-2">
+      <% if @order.shareable? %>
+        <%= link_to "共有", "#", 
+            class: "btn btn-info", 
+            id: "share-order-btn",
+            data: { order_id: @order.id } %>
+      <% end %>
       <%= link_to "編集", edit_order_path(@order), class: "btn btn-neutral" %>
       <%= link_to "戻る", orders_path, class: "btn btn-outline" %>
     </div>
@@ -242,3 +256,84 @@
                   form: { onsubmit: "return confirm('本当に削除しますか？')" } %>
   </div>
 </div>
+
+<!-- Share Modal -->
+<div id="share-modal" class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">オーダーを共有</h3>
+    <p class="py-4">このオーダーは以下の担当者と共有されています：</p>
+    
+    <div class="space-y-2 mb-4">
+      <% @order.users.each do |user| %>
+        <div class="flex items-center p-2 bg-gray-50 rounded">
+          <div class="avatar placeholder mr-3">
+            <div class="bg-neutral text-neutral-content rounded-full w-8">
+              <span class="text-xs"><%= user.family_name_kanji[0] %></span>
+            </div>
+          </div>
+          <span><%= user.family_name_kanji %> <%= user.given_name_kanji %></span>
+          <span class="text-gray-500 ml-2">(<%= user.email_address %>)</span>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="mb-4">
+      <label for="share-url" class="label">
+        <span class="label-text">共有用URL</span>
+      </label>
+      <div class="flex gap-2">
+        <input type="text" id="share-url" class="input input-bordered flex-1" readonly 
+               value="<%= order_url(@order) %>">
+        <button class="btn btn-primary" onclick="copyShareUrl()">コピー</button>
+      </div>
+      <div class="label">
+        <span class="label-text-alt">このURLを担当者に送信することでオーダーを共有できます</span>
+      </div>
+    </div>
+
+    <div class="modal-action">
+      <button class="btn" onclick="closeShareModal()">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const shareBtn = document.getElementById('share-order-btn');
+  const shareModal = document.getElementById('share-modal');
+  
+  if (shareBtn) {
+    shareBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      shareModal.classList.add('modal-open');
+    });
+  }
+});
+
+function closeShareModal() {
+  document.getElementById('share-modal').classList.remove('modal-open');
+}
+
+function copyShareUrl() {
+  const shareUrl = document.getElementById('share-url');
+  shareUrl.select();
+  shareUrl.setSelectionRange(0, 99999); // For mobile devices
+  
+  try {
+    document.execCommand('copy');
+    
+    // Show success feedback
+    const copyBtn = event.target;
+    const originalText = copyBtn.textContent;
+    copyBtn.textContent = 'コピー済み!';
+    copyBtn.classList.add('btn-success');
+    
+    setTimeout(() => {
+      copyBtn.textContent = originalText;
+      copyBtn.classList.remove('btn-success');
+    }, 2000);
+  } catch (err) {
+    alert('URLのコピーに失敗しました。手動でコピーしてください。');
+  }
+}
+</script>
