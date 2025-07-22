@@ -1,0 +1,54 @@
+<%- content_for :title, @item.name -%>
+
+<div class="p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">アイテム詳細</h1>
+    <div class="flex space-x-2">
+      <%= link_to "編集", edit_item_path(@item), class: "btn btn-primary" %>
+      <%= button_to "削除", @item, method: :delete, 
+          data: { confirm: "本当に削除しますか？" }, 
+          class: "btn btn-error" %>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-lg shadow">
+    <div class="p-6">
+      <div class="grid grid-cols-1 gap-6">
+        <div>
+          <label class="block text-sm font-semibold text-gray-900 mb-2">名前</label>
+          <div class="input input-bordered bg-gray-50 cursor-not-allowed">
+            <%= @item.name %>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-900 mb-2">説明</label>
+          <div class="textarea textarea-bordered bg-gray-50 cursor-not-allowed min-h-[100px]">
+            <%= @item.description || "説明なし" %>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-semibold text-gray-900 mb-2">作成日</label>
+            <div class="input input-bordered bg-gray-50 cursor-not-allowed">
+              <%= @item.created_at.strftime("%Y/%m/%d %H:%M") %>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-900 mb-2">更新日</label>
+            <div class="input input-bordered bg-gray-50 cursor-not-allowed">
+              <%= @item.updated_at.strftime("%Y/%m/%d %H:%M") %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end space-x-4 mt-8">
+        <%= link_to "戻る", items_path, class: "btn btn-outline" %>
+        <%= link_to "編集", edit_item_path(@item), class: "btn btn-primary" %>
+      </div>
+    </div>
+  </div>
+</div>

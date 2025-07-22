@@ -1,0 +1,33 @@
+<%= form_with model: item, local: true, class: "space-y-6" do |form| %>
+  <% if item.errors.any? %>
+    <div class="alert alert-error mb-6">
+      <div>
+        <strong><%= pluralize(item.errors.count, "error") %> prohibited this item from being saved:</strong>
+        <ul class="mt-2">
+          <% item.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="space-y-6">
+    <div>
+      <label class="block text-sm font-semibold text-gray-900 mb-2">名前</label>
+      <%= form.text_field :name, class: "input input-bordered w-full", placeholder: "例: PO, SETS, PK" %>
+      <p class="text-sm text-gray-500 mt-1">注文フォームで表示される名前です</p>
+    </div>
+
+    <div>
+      <label class="block text-sm font-semibold text-gray-900 mb-2">説明</label>
+      <%= form.text_area :description, class: "textarea textarea-bordered w-full", rows: 4, placeholder: "例: ポロシャツ (Polo Shirt)" %>
+      <p class="text-sm text-gray-500 mt-1">アイテムの詳細説明（オプション）</p>
+    </div>
+  </div>
+
+  <div class="flex justify-end space-x-4 mt-8">
+    <%= link_to "キャンセル", items_path, class: "btn btn-outline" %>
+    <%= form.submit button_text, class: "btn btn-neutral" %>
+  </div>
+<% end %>

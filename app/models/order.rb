@@ -23,8 +23,8 @@ class Order < ApplicationRecord
   end
 
   def total_purchase_amount
-    return 0 unless quantity.present? && purchase_price.present?
-    quantity * purchase_price
+    return 0 unless quantity.present? && purchase_price.present? && exchange_rate.present?
+    quantity * purchase_price * exchange_rate
   end
 
   def total_sales_amount
@@ -37,13 +37,8 @@ class Order < ApplicationRecord
   end
 
   def gross_profit_percentage
-    return 0 if total_purchase_amount.zero?
-    (gross_profit_amount / total_purchase_amount * 100).round(2)
-  end
-
-  def markup_rate
-    return 0 if purchase_price.blank? || purchase_price.zero?
-    ((sell_price - purchase_price) / purchase_price * 100).round(2)
+    return 0 if total_sales_amount.zero?
+    (gross_profit_amount / total_sales_amount * 100).round(2)
   end
 
   private

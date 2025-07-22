@@ -150,3 +150,7 @@ bin/rails assets:clean
 
 ## Deployment Precautions
 - Don't edit deployment related files to render like render-build.sh, render.yml, database.yml
+
+
+## Style Guidelines
+- Always refer to `/.claude/style.md` for styling conventions.

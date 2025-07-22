@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   resources :user_invitations, only: [ :create, :destroy ]
   get "activate/:token", to: "user_activations#new", as: :activate_user_invitation
   post "activate/:token", to: "user_activations#create"
-  resources :items, only: [] do
+  resources :items do
     collection do
       get :search
     end

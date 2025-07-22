@@ -70,6 +70,7 @@
               <%= form.text_field :item_name, 
                   class: "input input-bordered", 
                   placeholder: "例: PO, BLOUSON",
+                  autocomplete: "off",
                   data: { 
                     "tag-suggestions-target": "input",
                     action: "input->tag-suggestions#search focus->tag-suggestions#search"
@@ -174,7 +175,7 @@
             </div>
             
             <div class="form-control">
-              <label class="label label-text-alt">粗利益額</label>
+              <label class="label label-text-alt">粗利</label>
               <div class="input input-bordered bg-gray-50" id="gross_profit_amount">¥0</div>
             </div>
             
@@ -183,10 +184,6 @@
               <div class="input input-bordered bg-gray-50" id="gross_profit_percentage">0%</div>
             </div>
             
-            <div class="form-control">
-              <label class="label label-text-alt">マークアップ率 (%)</label>
-              <div class="input input-bordered bg-gray-50" id="markup_rate">0%</div>
-            </div>
           </div>
         </div>
       </div>
@@ -255,39 +252,33 @@ document.addEventListener('DOMContentLoaded', function() {
     const quantity = parseFloat(document.getElementById('quantity').value) || 0;
     const purchasePrice = parseFloat(document.getElementById('purchase_price').value) || 0;
     const sellPrice = parseFloat(document.getElementById('sell_price').value) || 0;
+    const exchangeRate = parseFloat(document.getElementById('exchange_rate').value) || 0;
     
-    // 総仕入額
-    const totalPurchaseAmount = quantity * purchasePrice;
+    // 仕入総額 = 数量 * 仕入単価 * 為替レート
+    const totalPurchaseAmount = quantity * purchasePrice * exchangeRate;
     document.getElementById('total_purchase_amount').textContent = 
       '¥' + new Intl.NumberFormat('ja-JP').format(totalPurchaseAmount);
     
-    // 総売上額
+    // 売上総額 = 数量 * 販売単価
     const totalSalesAmount = quantity * sellPrice;
     document.getElementById('total_sales_amount').textContent = 
       '¥' + new Intl.NumberFormat('ja-JP').format(totalSalesAmount);
     
-    // 粗利益額
+    // 粗利 = 売上総額 - 仕入総額
     const grossProfitAmount = totalSalesAmount - totalPurchaseAmount;
     document.getElementById('gross_profit_amount').textContent = 
       '¥' + new Intl.NumberFormat('ja-JP').format(grossProfitAmount);
     
-    // 粗利率
-    const grossProfitPercentage = totalPurchaseAmount !== 0 
-      ? ((grossProfitAmount / totalPurchaseAmount) * 100)
+    // 粗利率 = 粗利 / 売上総額 * 100
+    const grossProfitPercentage = totalSalesAmount !== 0 
+      ? ((grossProfitAmount / totalSalesAmount) * 100)
       : 0;
     document.getElementById('gross_profit_percentage').textContent = 
       grossProfitPercentage.toFixed(2) + '%';
-    
-    // マークアップ率
-    const markupRate = purchasePrice !== 0 
-      ? (((sellPrice - purchasePrice) / purchasePrice) * 100)
-      : 0;
-    document.getElementById('markup_rate').textContent = 
-      markupRate.toFixed(2) + '%';
   }
 
   // イベントリスナーを追加
-  ['quantity', 'purchase_price', 'sell_price'].forEach(id => {
+  ['quantity', 'purchase_price', 'sell_price', 'exchange_rate'].forEach(id => {
     const element = document.getElementById(id);
     if (element) {
       element.addEventListener('input', updateCalculations);

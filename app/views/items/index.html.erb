@@ -1,0 +1,49 @@
+<%- content_for :title, "Items" -%>
+
+<div class="p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">アイテム管理</h1>
+    <%= link_to "新しいアイテム", new_item_path, class: "btn btn-neutral" %>
+  </div>
+
+  <div class="overflow-x-auto bg-white rounded-lg shadow">
+    <table class="table table-zebra w-full">
+      <thead>
+        <tr class="bg-gray-50">
+          <th class="font-semibold text-gray-900">名前</th>
+          <th class="font-semibold text-gray-900">説明</th>
+          <th class="font-semibold text-gray-900">作成日</th>
+          <th class="font-semibold text-gray-900">アクション</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @items.each do |item| %>
+          <tr class="hover:bg-gray-50">
+            <td class="font-medium">
+              <%= link_to item.name, item_path(item), class: "link link-primary" %>
+            </td>
+            <td><%= item.description || "-" %></td>
+            <td><%= item.created_at.strftime("%Y/%m/%d") %></td>
+            <td>
+              <div class="flex space-x-1">
+                <%= link_to "詳細", item, class: "btn btn-xs btn-outline" %>
+                <%= link_to "編集", edit_item_path(item), class: "btn btn-xs btn-primary" %>
+                <%= button_to "削除", item, method: :delete, 
+                    data: { confirm: "本当に削除しますか？" }, 
+                    class: "btn btn-xs btn-error" %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    
+    <% if @items.empty? %>
+      <div class="text-center py-12">
+        <div class="text-gray-400 text-lg mb-2">🏷️</div>
+        <p class="text-gray-500">アイテムがまだありません</p>
+        <%= link_to "最初のアイテムを作成", new_item_path, class: "btn btn-neutral mt-4" %>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,88 @@
+ja:
+  activerecord:
+    models:
+      order: "オーダー"
+      item: "アイテム"
+      client: "クライアント"
+      user: "ユーザー"
+    attributes:
+      order:
+        client_id: "クライアント"
+        factory_name: "サプライヤー"
+        order_date: "注文日"
+        shipping_date: "ETD (出発予定日)"
+        delivery_date: "納期"
+        estimate_delivery_date: "推定納期"
+        item_number: "製品コード"
+        item_name: "製品名"
+        quantity: "数量"
+        trade_term: "貿易条件"
+        purchase_price: "仕入単価"
+        sell_price: "販売単価"
+        exchange_rate: "為替レート"
+        sales_multiple: "掛率"
+        export_port: "輸出港"
+        license: "ライセンス"
+      item:
+        name: "名前"
+        description: "説明"
+      client:
+        name: "名前"
+        address: "住所"
+      user:
+        email_address: "メールアドレス"
+        family_name_eng: "姓（英語）"
+        given_name_eng: "名前（英語）"
+        family_name_kanji: "姓（漢字）"
+        given_name_kanji: "名前（漢字）"
+    errors:
+      models:
+        order:
+          attributes:
+            client_id:
+              blank: "を選択してください"
+            factory_name:
+              blank: "を入力してください"
+            order_date:
+              blank: "を選択してください"
+            item_name:
+              blank: "を入力してください"
+            quantity:
+              blank: "を入力してください"
+              not_a_number: "は数値で入力してください"
+              greater_than: "は0より大きい値にしてください"
+            purchase_price:
+              blank: "を入力してください"
+              not_a_number: "は数値で入力してください"
+              greater_than_or_equal_to: "は0以上の値にしてください"
+            sell_price:
+              blank: "を入力してください"
+              not_a_number: "は数値で入力してください"
+              greater_than_or_equal_to: "は0以上の値にしてください"
+        item:
+          attributes:
+            name:
+              blank: "を入力してください"
+              taken: "は既に使用されています"
+  errors:
+    messages:
+      blank: "を入力してください"
+      not_a_number: "は数値で入力してください"
+      taken: "は既に使用されています"
+      invalid: "は正しくありません"
+      too_short: "は%{count}文字以上で入力してください"
+      too_long: "は%{count}文字以下で入力してください"
+      confirmation: "と%{attribute}の入力が一致しません"
+      accepted: "を受諾してください"
+      empty: "を入力してください"
+      present: "は入力しないでください"
+      inclusion: "は一覧にありません"
+      exclusion: "は予約されています"
+      wrong_length: "は%{count}文字で入力してください"
+      equal_to: "は%{count}にしてください"
+      less_than: "は%{count}より小さい値にしてください"
+      less_than_or_equal_to: "は%{count}以下の値にしてください"
+      greater_than: "は%{count}より大きい値にしてください"
+      greater_than_or_equal_to: "は%{count}以上の値にしてください"
+      odd: "は奇数にしてください"
+      even: "は偶数にしてください"
