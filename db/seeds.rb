@@ -75,7 +75,7 @@ orders_data.each do |order_data|
     factory_name: order_data[:factory_name],
     order_date: order_data[:order_date]
   ) do |o|
-    o.shipping_date = order_data[:shipping_date]
+    o.estimate_delivery_date = order_data[:shipping_date]  # Use shipping_date data for ETD
     o.delivery_date = order_data[:delivery_date]
     o.item_name = order_data[:items].first[:name] if order_data[:items].present?
     o.quantity = order_data[:items].first[:quantity] if order_data[:items].present?

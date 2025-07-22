@@ -10,7 +10,6 @@ ja:
         client_id: "クライアント"
         factory_name: "サプライヤー"
         order_date: "注文日"
-        shipping_date: "ETD (出発予定日)"
         delivery_date: "納期"
         estimate_delivery_date: "推定納期"
         item_number: "製品コード"

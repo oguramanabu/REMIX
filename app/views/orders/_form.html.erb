@@ -38,17 +38,12 @@
             </div>
             
             <div class="form-control">
-              <%= form.label :shipping_date, "ETD (出発予定日)", class: "label label-text-alt" %>
-              <%= form.date_field :shipping_date, class: "input input-bordered" %>
-            </div>
-            
-            <div class="form-control">
               <%= form.label :delivery_date, "納期", class: "label label-text-alt" %>
               <%= form.date_field :delivery_date, class: "input input-bordered" %>
             </div>
 
             <div class="form-control">
-              <%= form.label :estimate_delivery_date, "推定納期", class: "label label-text-alt" %>
+              <%= form.label :estimate_delivery_date, "ETD", class: "label label-text-alt" %>
               <%= form.date_field :estimate_delivery_date, class: "input input-bordered" %>
             </div>
           </div>
@@ -60,9 +55,14 @@
         <div class="card-body">
           <h2 class="card-title text-lg mb-4">製品情報</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="form-control">
-              <%= form.label :item_number, "製品コード", class: "label label-text-alt" %>
-              <%= form.text_field :item_number, class: "input input-bordered", placeholder: "例: O11591Xx" %>
+            <div class="form-control" data-controller="text-normalizer">
+              <%= form.label :item_number, "品番", class: "label label-text-alt" %>
+              <%= form.text_field :item_number, 
+                  class: "input input-bordered", 
+                  placeholder: "例: O11591Xx",
+                  data: { 
+                    action: "input->text-normalizer#normalize blur->text-normalizer#normalize"
+                  } %>
             </div>
             
             <div class="form-control relative" data-controller="tag-suggestions">

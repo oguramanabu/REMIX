@@ -99,7 +99,7 @@
                   <td>
                     <% if order.delivery_date && order.delivery_date < Date.current %>
                       <span class="badge badge-success">完了</span>
-                    <% elsif order.shipping_date && order.shipping_date <= Date.current %>
+                    <% elsif order.estimate_delivery_date && order.estimate_delivery_date <= Date.current %>
                       <span class="badge badge-info">出荷済み</span>
                     <% else %>
                       <span class="badge badge-warning">処理中</span>

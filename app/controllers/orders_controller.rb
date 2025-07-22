@@ -90,7 +90,7 @@ class OrdersController < ApplicationController
   end
 
   def order_params
-    params.require(:order).permit(:client_id, :factory_name, :order_date, :shipping_date, :delivery_date,
+    params.require(:order).permit(:client_id, :factory_name, :order_date, :delivery_date,
                                   :item_number, :item_name, :quantity, :trade_term, :purchase_price,
                                   :sell_price, :export_port, :estimate_delivery_date, :sales_multiple,
                                   :exchange_rate, :license, :file_metadata,
