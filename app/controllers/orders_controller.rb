@@ -3,7 +3,7 @@ class OrdersController < ApplicationController
   before_action :set_order, only: [ :show, :edit, :update, :destroy, :update_file_metadata ]
 
   def index
-    @orders = Order.includes(:creator, :users).order(order_date: :desc)
+    @orders = Order.includes(:creator, :users, :client).order(order_date: :desc)
   end
 
   def show
@@ -90,7 +90,7 @@ class OrdersController < ApplicationController
   end
 
   def order_params
-    params.require(:order).permit(:client, :factory_name, :order_date, :shipping_date, :delivery_date,
+    params.require(:order).permit(:client_id, :factory_name, :order_date, :shipping_date, :delivery_date,
                                   :item_number, :item_name, :quantity, :trade_term, :purchase_price,
                                   :sell_price, :export_port, :estimate_delivery_date, :sales_multiple,
                                   :exchange_rate, :license, :file_metadata,

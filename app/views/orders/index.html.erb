@@ -1,7 +1,7 @@
 <div class="p-6">
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-bold text-gray-900">オーダー管理</h1>
-    <%= link_to "新規オーダー", new_order_path, class: "btn btn-primary" %>
+    <%= link_to "新規オーダー", new_order_path, class: "btn btn-neutral" %>
   </div>
 
   <div class="overflow-x-auto bg-white rounded-lg shadow">
@@ -28,7 +28,7 @@
             <td class="font-medium">
               <%= link_to "##{order.id}", order_path(order), class: "link link-primary" %>
             </td>
-            <td><%= order.client %></td>
+            <td><%= order.client&.name || order.client %></td>
             <td><%= order.item_name || "-" %></td>
             <td><%= order.quantity ? "#{number_with_delimiter(order.quantity)}個" : "-" %></td>
             <td><%= order.order_date&.strftime("%Y/%m/%d") %></td>
@@ -93,7 +93,7 @@
       <div class="text-center py-12">
         <div class="text-gray-400 text-lg mb-2">📦</div>
         <p class="text-gray-500">オーダーがまだありません</p>
-        <%= link_to "最初のオーダーを作成", new_order_path, class: "btn btn-primary mt-4" %>
+        <%= link_to "最初のオーダーを作成", new_order_path, class: "btn btn-neutral mt-4" %>
       </div>
     <% end %>
   </div>

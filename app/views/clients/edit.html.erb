@@ -1,0 +1,8 @@
+<div class="p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">クライアント編集 - <%= @client.name %></h1>
+    <%= link_to "戻る", client_path(@client), class: "btn btn-outline" %>
+  </div>
+
+  <%= render "form", client: @client, button_text: "クライアントを更新" %>
+</div>

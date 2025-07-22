@@ -1,11 +1,12 @@
 class Order < ApplicationRecord
   belongs_to :creator, class_name: "User"
+  belongs_to :client, optional: true
   has_many :order_users, dependent: :destroy
   has_many :users, through: :order_users
 
   has_many_attached :files
 
-  validates :client, presence: true
+  validates :client_id, presence: true
   validates :factory_name, presence: true
   validates :order_date, presence: true
   validates :item_name, presence: true

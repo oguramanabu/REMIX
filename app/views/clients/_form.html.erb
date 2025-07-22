@@ -1,0 +1,132 @@
+<%= form_with model: client, local: true, class: "space-y-6", id: "client-form" do |form| %>
+  <% if client.errors.any? %>
+    <div class="alert alert-error">
+      <div>
+        <strong><%= pluralize(client.errors.count, "error") %> prohibited this client from being saved:</strong>
+        <ul>
+          <% client.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- 基本情報 -->
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <h2 class="card-title text-lg mb-4">基本情報</h2>
+        
+        <div class="space-y-4">
+          <div class="form-control">
+            <%= form.label :name, "クライアント名", class: "label label-text-alt" %>
+            <%= form.text_field :name, class: "input input-bordered", required: true %>
+          </div>
+
+          <div class="form-control">
+            <%= form.label :address, "本社住所", class: "label label-text-alt" %>
+            <%= form.text_area :address, class: "textarea textarea-bordered", rows: 3, required: true %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 配送先住所 -->
+    <div class="card bg-white shadow">
+      <div class="card-body">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="card-title text-lg">配送先住所</h2>
+          <button type="button" id="add-shipping-address" class="btn btn-sm btn-neutral">配送先追加</button>
+        </div>
+        
+        <div id="shipping-addresses">
+          <%= form.fields_for :shipping_addresses do |shipping_form| %>
+            <div class="shipping-address border rounded-lg p-4 mb-4">
+              <div class="space-y-3">
+                <div class="form-control">
+                  <%= shipping_form.label :name, "配送先名", class: "label label-text-alt" %>
+                  <%= shipping_form.text_field :name, class: "input input-bordered input-sm", placeholder: "例: 東京営業所" %>
+                </div>
+                
+                <div class="form-control">
+                  <%= shipping_form.label :address, "住所", class: "label label-text-alt" %>
+                  <%= shipping_form.text_area :address, class: "textarea textarea-bordered textarea-sm", rows: 2, required: true %>
+                </div>
+                
+                <div class="flex justify-end">
+                  <% if shipping_form.object.persisted? %>
+                    <%= shipping_form.check_box :_destroy, class: "hidden" %>
+                    <button type="button" class="btn btn-sm btn-warning remove-shipping-address" data-action="mark-destroy">削除</button>
+                  <% else %>
+                    <button type="button" class="btn btn-sm btn-warning remove-shipping-address">削除</button>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 送信ボタン -->
+  <div class="flex justify-end space-x-4">
+    <%= link_to "キャンセル", clients_path, class: "btn btn-outline" %>
+    <%= form.submit button_text, class: "btn btn-neutral" %>
+  </div>
+<% end %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // 配送先住所管理
+  const addShippingButton = document.getElementById('add-shipping-address');
+  const shippingContainer = document.getElementById('shipping-addresses');
+  let shippingIndex = document.querySelectorAll('.shipping-address').length;
+
+  if (addShippingButton) {
+    addShippingButton.addEventListener('click', function() {
+      const newShippingAddress = `
+        <div class="shipping-address border rounded-lg p-4 mb-4">
+          <div class="space-y-3">
+            <div class="form-control">
+              <label class="label label-text-alt">配送先名</label>
+              <input type="text" name="client[shipping_addresses_attributes][${shippingIndex}][name]" class="input input-bordered input-sm" placeholder="例: 東京営業所">
+            </div>
+            
+            <div class="form-control">
+              <label class="label label-text-alt">住所</label>
+              <textarea name="client[shipping_addresses_attributes][${shippingIndex}][address]" class="textarea textarea-bordered textarea-sm" rows="2" required></textarea>
+            </div>
+            
+            <div class="flex justify-end">
+              <button type="button" class="btn btn-sm btn-warning remove-shipping-address">削除</button>
+            </div>
+          </div>
+        </div>
+      `;
+      shippingContainer.insertAdjacentHTML('beforeend', newShippingAddress);
+      shippingIndex++;
+    });
+  }
+
+  if (shippingContainer) {
+    shippingContainer.addEventListener('click', function(e) {
+      if (e.target.classList.contains('remove-shipping-address')) {
+        const shippingAddress = e.target.closest('.shipping-address');
+        if (e.target.dataset.action === 'mark-destroy') {
+          // For existing addresses, mark for destruction
+          const destroyCheckbox = shippingAddress.querySelector('input[name*="_destroy"]');
+          if (destroyCheckbox) {
+            destroyCheckbox.checked = true;
+            shippingAddress.style.display = 'none';
+          }
+        } else {
+          // For new addresses, just remove from DOM
+          shippingAddress.remove();
+        }
+      }
+    });
+  }
+});
+</script>

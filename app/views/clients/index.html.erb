@@ -1,0 +1,49 @@
+<div class="p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">クライアント管理</h1>
+    <%= link_to "新規クライアント", new_client_path, class: "btn btn-neutral" %>
+  </div>
+
+  <div class="overflow-x-auto bg-white rounded-lg shadow">
+    <table class="table table-zebra w-full">
+      <thead>
+        <tr class="bg-gray-50">
+          <th class="font-semibold text-gray-900">クライアント名</th>
+          <th class="font-semibold text-gray-900">本社住所</th>
+          <th class="font-semibold text-gray-900">配送先数</th>
+          <th class="font-semibold text-gray-900">注文数</th>
+          <th class="font-semibold text-gray-900">アクション</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @clients.each do |client| %>
+          <tr class="hover:bg-gray-50">
+            <td class="font-medium">
+              <%= link_to client.name, client_path(client), class: "link link-primary" %>
+            </td>
+            <td><%= client.address %></td>
+            <td>
+              <span class="badge badge-outline"><%= client.shipping_addresses.count %>件</span>
+            </td>
+            <td>
+              <span class="badge badge-outline"><%= client.orders.count %>件</span>
+            </td>
+            <td>
+              <div class="flex space-x-2">
+                <%= link_to "詳細", client_path(client), class: "btn btn-sm btn-outline" %>
+                <%= link_to "編集", edit_client_path(client), class: "btn btn-sm btn-neutral" %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+        <% if @clients.empty? %>
+          <tr>
+            <td colspan="5" class="text-center py-8 text-gray-500">
+              クライアントがありません
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

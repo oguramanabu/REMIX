@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_22_073226) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_22_081248) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,6 +40,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_073226) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index [ "blob_id", "variation_digest" ], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "clients", force: :cascade do |t|
+    t.string "name"
+    t.text "address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "order_users", force: :cascade do |t|
@@ -74,6 +81,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_073226) do
     t.decimal "sales_multiple", precision: 10, scale: 4
     t.integer "exchange_rate"
     t.string "license"
+    t.bigint "client_id"
+    t.index [ "client_id" ], name: "index_orders_on_client_id"
     t.index [ "creator_id" ], name: "index_orders_on_creator_id"
   end
 
@@ -84,6 +93,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_073226) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index [ "user_id" ], name: "index_sessions_on_user_id"
+  end
+
+  create_table "shipping_addresses", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.text "address"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index [ "client_id" ], name: "index_shipping_addresses_on_client_id"
   end
 
   create_table "user_invitations", force: :cascade do |t|
@@ -116,7 +134,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_073226) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "order_users", "orders"
   add_foreign_key "order_users", "users"
+  add_foreign_key "orders", "clients"
   add_foreign_key "orders", "users", column: "creator_id"
   add_foreign_key "sessions", "users"
+  add_foreign_key "shipping_addresses", "clients"
   add_foreign_key "user_invitations", "users", column: "invited_by_id"
 end

@@ -21,8 +21,10 @@
           <h2 class="card-title text-lg mb-4">基本情報</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="form-control">
-              <%= form.label :client, "クライアント", class: "label label-text-alt" %>
-              <%= form.text_field :client, class: "input input-bordered" %>
+              <%= form.label :client_id, "クライアント", class: "label label-text-alt" %>
+              <%= form.collection_select :client_id, Client.all, :id, :name, 
+                  { prompt: "クライアントを選択してください" }, 
+                  { class: "select select-bordered w-full" } %>
             </div>
             
             <div class="form-control">
@@ -211,13 +213,13 @@
                   <% order.attachment_urls.each do |url| %>
                     <div class="url-field flex gap-2">
                       <input type="text" name="order[attachment_urls][]" value="<%= url %>" class="input input-bordered flex-1" placeholder="https://example.com/document">
-                      <button type="button" class="btn btn-error btn-sm remove-url">削除</button>
+                      <button type="button" class="btn btn-warning btn-sm remove-url">削除</button>
                     </div>
                   <% end %>
                 <% else %>
                   <div class="url-field flex gap-2">
                     <input type="text" name="order[attachment_urls][]" class="input input-bordered flex-1" placeholder="https://example.com/document">
-                    <button type="button" class="btn btn-error btn-sm remove-url">削除</button>
+                    <button type="button" class="btn btn-warning btn-sm remove-url">削除</button>
                   </div>
                 <% end %>
               </div>
@@ -233,7 +235,7 @@
   <!-- 送信ボタン -->
   <div class="flex justify-end space-x-4">
     <%= link_to "キャンセル", orders_path, class: "btn btn-outline" %>
-    <%= form.submit button_text, class: "btn btn-primary" %>
+    <%= form.submit button_text, class: "btn btn-neutral" %>
   </div>
 <% end %>
 
@@ -296,7 +298,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const newUrlField = `
         <div class="url-field flex gap-2 mb-2">
           <input type="text" name="order[attachment_urls][]" class="input input-bordered flex-1" placeholder="https://example.com/document">
-          <button type="button" class="btn btn-error btn-sm remove-url">削除</button>
+          <button type="button" class="btn btn-warning btn-sm remove-url">削除</button>
         </div>
       `;
       urlFieldsContainer.insertAdjacentHTML('beforeend', newUrlField);

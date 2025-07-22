@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
   resource :settings, only: [ :show, :update ], as: :settings
+  resources :clients
   resources :orders do
     member do
       patch :update_file_metadata
