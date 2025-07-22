@@ -65,9 +65,18 @@
               <%= form.text_field :item_number, class: "input input-bordered", placeholder: "例: O11591Xx" %>
             </div>
             
-            <div class="form-control">
+            <div class="form-control relative" data-controller="tag-suggestions">
               <%= form.label :item_name, "製品名", class: "label label-text-alt" %>
-              <%= form.text_field :item_name, class: "input input-bordered", placeholder: "例: PO, BLOUSON" %>
+              <%= form.text_field :item_name, 
+                  class: "input input-bordered", 
+                  placeholder: "例: PO, BLOUSON",
+                  data: { 
+                    "tag-suggestions-target": "input",
+                    action: "input->tag-suggestions#search focus->tag-suggestions#search"
+                  } %>
+              <div data-tag-suggestions-target="suggestions" 
+                   class="absolute z-10 top-full left-0 right-0 bg-white border border-gray-300 rounded-b-lg shadow-lg hidden max-h-60 overflow-y-auto">
+              </div>
             </div>
             
             <div class="form-control">

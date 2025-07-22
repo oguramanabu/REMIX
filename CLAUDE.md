@@ -115,7 +115,7 @@ bin/rails assets:clean
 - Light theme configured by default
 
 ### JavaScript
-- Hotwire (Turbo Rails + Stimulus) for SPA-like experience
+- Hotwire (Turbo Rails + Stimulus) for SPA-like experience. But when using vanilla Javascript it may conflict with Turbo. Use turbo: false to disable Turbo for specific links or forms.
 - Importmaps for modern JavaScript without bundling
 - Minimal JavaScript approach
 

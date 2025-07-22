@@ -127,3 +127,30 @@ end
 
 puts "Created #{Client.count} clients"
 puts "Created #{ShippingAddress.count} shipping addresses"
+
+# Create common item names for tag suggestions
+items_data = [
+  { name: "PO", description: "ポロシャツ (Polo Shirt)" },
+  { name: "SETS", description: "セット商品 (Set Items)" },
+  { name: "PK", description: "パーカー (Parka/Hoodie)" },
+  { name: "BLOUSON", description: "ブルゾン (Blouson/Jacket)" },
+  { name: "SHIRT", description: "シャツ (Shirt)" },
+  { name: "PANTS", description: "パンツ (Pants)" },
+  { name: "SKIRT", description: "スカート (Skirt)" },
+  { name: "DRESS", description: "ドレス (Dress)" },
+  { name: "JACKET", description: "ジャケット (Jacket)" },
+  { name: "COAT", description: "コート (Coat)" },
+  { name: "SWEATER", description: "セーター (Sweater)" },
+  { name: "CARDIGAN", description: "カーディガン (Cardigan)" },
+  { name: "BLOUSE", description: "ブラウス (Blouse)" },
+  { name: "T-SHIRT", description: "Tシャツ (T-Shirt)" },
+  { name: "TANK", description: "タンクトップ (Tank Top)" }
+]
+
+items_data.each do |item_data|
+  Item.find_or_create_by!(name: item_data[:name]) do |item|
+    item.description = item_data[:description]
+  end
+end
+
+puts "Created #{Item.count} item names for tag suggestions"
