@@ -3,7 +3,7 @@ class OrdersController < ApplicationController
   before_action :set_order, only: [ :show, :edit, :update, :destroy, :update_file_metadata ]
 
   def index
-    @orders = Order.includes(:order_items, :creator, :users).order(order_date: :desc)
+    @orders = Order.includes(:creator, :users).order(order_date: :desc)
   end
 
   def show
@@ -11,7 +11,6 @@ class OrdersController < ApplicationController
 
   def new
     @order = Order.new
-    @order.order_items.build
     @users = User.all
   end
 
@@ -39,7 +38,6 @@ class OrdersController < ApplicationController
 
   def edit
     @users = User.all
-    @order.order_items.build if @order.order_items.empty?
   end
 
   def update
@@ -95,6 +93,6 @@ class OrdersController < ApplicationController
     params.require(:order).permit(:client, :factory_name, :order_date, :shipping_date, :delivery_date,
                                   :file_metadata,
                                   files: [], user_ids: [], attachment_urls: [],
-                                  order_items_attributes: [ :id, :name, :quantity, :unit_price, :_destroy ])
+                                  )
   end
 end

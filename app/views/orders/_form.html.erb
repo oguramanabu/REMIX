@@ -144,48 +144,6 @@
     </div>
   </div>
 
-  <!-- オーダーアイテム -->
-  <div class="card bg-white shadow">
-    <div class="card-body">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="card-title text-lg">オーダーアイテム</h2>
-        <button type="button" id="add-item" class="btn btn-sm btn-primary">アイテム追加</button>
-      </div>
-      
-      <div id="order-items">
-        <%= form.fields_for :order_items do |item_form| %>
-          <div class="order-item border rounded-lg p-4 mb-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div class="form-control">
-                <%= item_form.label :name, "アイテム名", class: "label label-text-alt" %>
-                <%= item_form.text_field :name, class: "input input-bordered input-sm", required: true %>
-              </div>
-              
-              <div class="form-control">
-                <%= item_form.label :quantity, "数量", class: "label label-text-alt" %>
-                <%= item_form.number_field :quantity, class: "input input-bordered input-sm", min: 1, required: true %>
-              </div>
-              
-              <div class="form-control">
-                <%= item_form.label :unit_price, "単価 (¥)", class: "label label-text-alt" %>
-                <%= item_form.number_field :unit_price, class: "input input-bordered input-sm", min: 0, step: 0.01, required: true %>
-              </div>
-              
-              <div class="form-control">
-                <label class="label label-text-alt">アクション</label>
-                <% if item_form.object.persisted? %>
-                  <%= item_form.check_box :_destroy, class: "hidden" %>
-                  <button type="button" class="btn btn-sm btn-error remove-item" data-action="mark-destroy">削除</button>
-                <% else %>
-                  <button type="button" class="btn btn-sm btn-error remove-item">削除</button>
-                <% end %>
-              </div>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    </div>
-  </div>
 
   <!-- 送信ボタン -->
   <div class="flex justify-end space-x-4">
@@ -196,57 +154,6 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Order items management
-  const addItemButton = document.getElementById('add-item');
-  const orderItemsContainer = document.getElementById('order-items');
-  let itemIndex = document.querySelectorAll('.order-item').length;
-
-  addItemButton.addEventListener('click', function() {
-    const newItem = `
-      <div class="order-item border rounded-lg p-4 mb-4">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="form-control">
-            <label class="label label-text-alt">アイテム名</label>
-            <input type="text" name="order[order_items_attributes][${itemIndex}][name]" class="input input-bordered input-sm" required>
-          </div>
-          
-          <div class="form-control">
-            <label class="label label-text-alt">数量</label>
-            <input type="number" name="order[order_items_attributes][${itemIndex}][quantity]" class="input input-bordered input-sm" min="1" required>
-          </div>
-          
-          <div class="form-control">
-            <label class="label label-text-alt">単価 (¥)</label>
-            <input type="number" name="order[order_items_attributes][${itemIndex}][unit_price]" class="input input-bordered input-sm" min="0" step="0.01" required>
-          </div>
-          
-          <div class="form-control">
-            <label class="label label-text-alt">アクション</label>
-            <button type="button" class="btn btn-sm btn-error remove-item">削除</button>
-          </div>
-        </div>
-      </div>
-    `;
-    orderItemsContainer.insertAdjacentHTML('beforeend', newItem);
-    itemIndex++;
-  });
-
-  orderItemsContainer.addEventListener('click', function(e) {
-    if (e.target.classList.contains('remove-item')) {
-      const orderItem = e.target.closest('.order-item');
-      if (e.target.dataset.action === 'mark-destroy') {
-        // For existing items, mark for destruction
-        const destroyCheckbox = orderItem.querySelector('input[name*="_destroy"]');
-        if (destroyCheckbox) {
-          destroyCheckbox.checked = true;
-          orderItem.style.display = 'none';
-        }
-      } else {
-        // For new items, just remove from DOM
-        orderItem.remove();
-      }
-    }
-  });
 
   // URL management
   const addUrlButton = document.getElementById('add-url');

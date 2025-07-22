@@ -75,13 +75,6 @@ orders_data.each do |order_data|
     o.shipping_date = order_data[:shipping_date]
     o.delivery_date = order_data[:delivery_date]
   end
-
-  order_data[:items].each do |item_data|
-    order.order_items.find_or_create_by!(name: item_data[:name]) do |item|
-      item.quantity = item_data[:quantity]
-      item.unit_price = item_data[:unit_price]
-    end
-  end
 end
 
-puts "Created #{Order.count} orders with #{OrderItem.count} order items"
+puts "Created #{Order.count} orders"

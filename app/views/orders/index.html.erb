@@ -61,10 +61,10 @@
               <% end %>
             </td>
             <td>
-              <span class="badge badge-outline"><%= order.order_items.count %>件</span>
+              <span class="badge badge-outline">-</span>
             </td>
             <td class="font-medium">
-              ¥<%= number_with_delimiter(order.order_items.sum { |item| item.total_price }) %>
+              -
             </td>
             <td>
               <% if order.delivery_date && order.delivery_date < Date.current %>
