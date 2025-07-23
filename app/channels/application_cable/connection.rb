@@ -3,14 +3,21 @@ module ApplicationCable
     identified_by :current_user
 
     def connect
-      set_current_user || reject_unauthorized_connection
+      self.current_user = find_verified_user
     end
 
     private
-      def set_current_user
-        if session = Session.find_by(id: cookies.signed[:session_id])
-          self.current_user = session.user
-        end
-      end
+
+    def find_verified_user
+      # Get the session token from cookies
+      session_id = cookies.signed[:session_id]
+      return reject_unauthorized_connection unless session_id
+
+      # Find the session and associated user
+      session = Session.find_by(id: session_id)
+      return reject_unauthorized_connection unless session
+
+      session.user
+    end
   end
 end

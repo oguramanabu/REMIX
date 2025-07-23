@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_22_111327) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_22_114508) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,6 +40,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_111327) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index [ "blob_id", "variation_digest" ], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "chat_messages", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.bigint "user_id", null: false
+    t.text "content", null: false
+    t.text "mentioned_users"
+    t.boolean "is_system_message", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index [ "order_id", "created_at" ], name: "index_chat_messages_on_order_id_and_created_at"
+    t.index [ "order_id" ], name: "index_chat_messages_on_order_id"
+    t.index [ "user_id" ], name: "index_chat_messages_on_user_id"
   end
 
   create_table "clients", force: :cascade do |t|
@@ -141,6 +154,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_111327) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "chat_messages", "orders"
+  add_foreign_key "chat_messages", "users"
   add_foreign_key "order_users", "orders"
   add_foreign_key "order_users", "users"
   add_foreign_key "orders", "clients"

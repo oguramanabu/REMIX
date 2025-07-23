@@ -1,4 +1,14 @@
-<%= form_with model: order, local: true, html: { multipart: true, class: "space-y-6", id: "order-form" } do |form| %>
+<%= form_with model: order, local: true, html: { 
+  multipart: true, 
+  class: "space-y-6", 
+  id: "order-form",
+  data: {
+    controller: "autosave",
+    autosave_url_value: order.persisted? ? order_path(order) : orders_path,
+    autosave_method_value: order.persisted? ? "PATCH" : "POST",
+    autosave_target: "form"
+  }
+} do |form| %>
   <% if order.errors.any? %>
     <div class="alert alert-error">
       <div>
@@ -322,6 +332,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // 初期計算
   updateCalculations();
+
 
   // URL管理
   const addUrlButton = document.getElementById('add-url');

@@ -5,6 +5,7 @@ ja:
       item: "アイテム"
       client: "クライアント"
       user: "ユーザー"
+      chat_message: "チャットメッセージ"
     attributes:
       order:
         client_id: "クライアント"
@@ -63,6 +64,10 @@ ja:
             name:
               blank: "を入力してください"
               taken: "は既に使用されています"
+        chat_message:
+          attributes:
+            content:
+              blank: "を入力してください"
   errors:
     messages:
       blank: "を入力してください"

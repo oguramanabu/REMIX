@@ -47,7 +47,16 @@ class OrdersController < ApplicationController
       end
     end
 
-    redirect_to edit_order_path(@order), notice: "新しいオーダーが下書きとして作成されました。内容を入力して保存してください。"
+    # Handle autosave requests differently
+    if params[:commit] == "autosave"
+      render json: {
+        status: "success",
+        redirect_url: order_path(@order),
+        edit_url: edit_order_path(@order)
+      }
+    else
+      redirect_to edit_order_path(@order), notice: "新しいオーダーが下書きとして作成されました。内容を入力して保存してください。"
+    end
   end
 
   def edit
@@ -96,7 +105,12 @@ class OrdersController < ApplicationController
     @order.assign_attributes(order_params)
     @order.save(validate: false)
 
-    redirect_to edit_order_path(@order), notice: "下書きが保存されました。"
+    # Handle autosave requests differently
+    if params[:commit] == "autosave"
+      render json: { status: "success" }
+    else
+      redirect_to edit_order_path(@order), notice: "下書きが保存されました。"
+    end
   end
 
   def submit_order

@@ -7,6 +7,11 @@ Rails.application.routes.draw do
     member do
       patch :update_file_metadata
     end
+    resources :chat_messages, only: [ :index, :create ] do
+      collection do
+        get :users_for_mention
+      end
+    end
   end
   resources :user_invitations, only: [ :create, :destroy ]
   get "activate/:token", to: "user_activations#new", as: :activate_user_invitation

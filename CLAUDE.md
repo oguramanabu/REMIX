@@ -118,6 +118,7 @@ bin/rails assets:clean
 - Hotwire (Turbo Rails + Stimulus) for SPA-like experience. But when using vanilla Javascript it may conflict with Turbo. Use turbo: false to disable Turbo for specific links or forms.
 - Importmaps for modern JavaScript without bundling
 - Minimal JavaScript approach
+- Restart server after editing, adding JavaScript.
 
 ### Layout Structure
 - `application.html.erb`: Main layout with responsive navbar

@@ -248,6 +248,9 @@
     </div>
   <% end %>
 
+  <!-- Chat Section -->
+  <%= render "shared/order_chat", order: @order %>
+  
   <!-- アクション -->
   <div class="flex justify-end mt-6 space-x-4">
     <%= button_to "削除", order_path(@order), 

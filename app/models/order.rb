@@ -3,6 +3,7 @@ class Order < ApplicationRecord
   belongs_to :client, optional: true
   has_many :order_users, dependent: :destroy
   has_many :users, through: :order_users
+  has_many :chat_messages, dependent: :destroy
 
   has_many_attached :files
 
