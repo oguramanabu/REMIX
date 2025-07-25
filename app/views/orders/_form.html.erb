@@ -22,7 +22,7 @@
     </div>
   <% end %>
 
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" data-controller="order-calculations">
     <!-- 左側のコラム -->
     <div class="space-y-6">
       <!-- 基本情報 -->
@@ -92,7 +92,7 @@
             
             <div class="form-control">
               <%= form.label :quantity, "数量", class: "label label-text-alt" %>
-              <%= form.number_field :quantity, class: "input input-bordered", min: 1, step: 1, id: "quantity" %>
+              <%= form.number_field :quantity, class: "input input-bordered", min: 1, step: 1, data: { "order-calculations-target": "quantity", action: "input->order-calculations#updateCalculations change->order-calculations#updateCalculations" } %>
             </div>
             
             <div class="form-control">
@@ -152,17 +152,17 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="form-control">
               <%= form.label :purchase_price, "仕入単価", class: "label label-text-alt" %>
-              <%= form.number_field :purchase_price, class: "input input-bordered", min: 0, step: 0.01, id: "purchase_price" %>
+              <%= form.number_field :purchase_price, class: "input input-bordered", min: 0, step: 0.01, data: { "order-calculations-target": "purchasePrice", action: "input->order-calculations#updateCalculations change->order-calculations#updateCalculations" } %>
             </div>
             
             <div class="form-control">
               <%= form.label :sell_price, "販売単価", class: "label label-text-alt" %>
-              <%= form.number_field :sell_price, class: "input input-bordered", min: 0, step: 1, id: "sell_price" %>
+              <%= form.number_field :sell_price, class: "input input-bordered", min: 0, step: 1, data: { "order-calculations-target": "sellPrice", action: "input->order-calculations#updateCalculations change->order-calculations#updateCalculations" } %>
             </div>
 
             <div class="form-control">
               <%= form.label :exchange_rate, "為替レート", class: "label label-text-alt" %>
-              <%= form.number_field :exchange_rate, class: "input input-bordered", min: 0, step: 0.01, id: "exchange_rate" %>
+              <%= form.number_field :exchange_rate, class: "input input-bordered", min: 0, step: 0.01, data: { "order-calculations-target": "exchangeRate", action: "input->order-calculations#updateCalculations change->order-calculations#updateCalculations" } %>
             </div>
 
             <div class="form-control">
@@ -176,22 +176,22 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="form-control">
               <label class="label label-text-alt">仕入総額</label>
-              <div class="input input-bordered bg-gray-50" id="total_purchase_amount">¥0</div>
+              <div class="input input-bordered bg-gray-50" data-order-calculations-target="totalPurchaseAmount">¥0</div>
             </div>
             
             <div class="form-control">
               <label class="label label-text-alt">売上総額</label>
-              <div class="input input-bordered bg-gray-50" id="total_sales_amount">¥0</div>
+              <div class="input input-bordered bg-gray-50" data-order-calculations-target="totalSalesAmount">¥0</div>
             </div>
             
             <div class="form-control">
               <label class="label label-text-alt">粗利</label>
-              <div class="input input-bordered bg-gray-50" id="gross_profit_amount">¥0</div>
+              <div class="input input-bordered bg-gray-50" data-order-calculations-target="grossProfitAmount">¥0</div>
             </div>
             
             <div class="form-control">
               <label class="label label-text-alt">粗利率</label>
-              <div class="input input-bordered bg-gray-50" id="gross_profit_percentage">0%</div>
+              <div class="input input-bordered bg-gray-50" data-order-calculations-target="grossProfitPercentage">0%</div>
             </div>
             
           </div>
@@ -261,14 +261,14 @@
             </div>
 
             <!-- URL管理 -->
-            <div class="form-control">
+            <div class="form-control" data-controller="url-fields">
               <label class="label label-text-alt">関連URL</label>
-              <div id="url-fields" class="space-y-2">
+              <div data-url-fields-target="container" class="space-y-2">
                 <% if order.attachment_urls.present? %>
                   <% order.attachment_urls.each do |url| %>
                     <div class="url-field flex gap-2">
                       <input type="text" name="order[attachment_urls][]" value="<%= url %>" class="input input-bordered flex-1" placeholder="https://example.com/document">
-                      <button type="button" class="btn btn-warning btn-sm remove-url">削除</button>
+                      <button type="button" class="btn btn-warning btn-sm" data-action="click->url-fields#removeUrl">削除</button>
                     </div>
                   <% end %>
                 <% else %>
@@ -278,7 +278,7 @@
                   </div>
                 <% end %>
               </div>
-              <button type="button" id="add-url" class="btn btn-sm btn-outline mt-2">URLを追加</button>
+              <button type="button" class="btn btn-sm btn-outline mt-2" data-action="click->url-fields#addUrl">URLを追加</button>
             </div>
           </div>
         </div>
@@ -297,78 +297,3 @@
     <% end %>
   </div>
 <% end %>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  // 計算機能
-  function updateCalculations() {
-    const quantity = parseFloat(document.getElementById('quantity').value) || 0;
-    const purchasePrice = parseFloat(document.getElementById('purchase_price').value) || 0;
-    const sellPrice = parseFloat(document.getElementById('sell_price').value) || 0;
-    const exchangeRate = parseFloat(document.getElementById('exchange_rate').value) || 0;
-    
-    // 仕入総額 = 数量 * 仕入単価 * 為替レート
-    const totalPurchaseAmount = quantity * purchasePrice * exchangeRate;
-    document.getElementById('total_purchase_amount').textContent = 
-      '¥' + new Intl.NumberFormat('ja-JP').format(totalPurchaseAmount);
-    
-    // 売上総額 = 数量 * 販売単価
-    const totalSalesAmount = quantity * sellPrice;
-    document.getElementById('total_sales_amount').textContent = 
-      '¥' + new Intl.NumberFormat('ja-JP').format(totalSalesAmount);
-    
-    // 粗利 = 売上総額 - 仕入総額
-    const grossProfitAmount = totalSalesAmount - totalPurchaseAmount;
-    document.getElementById('gross_profit_amount').textContent = 
-      '¥' + new Intl.NumberFormat('ja-JP').format(grossProfitAmount);
-    
-    // 粗利率 = 粗利 / 売上総額 * 100
-    const grossProfitPercentage = totalSalesAmount !== 0 
-      ? ((grossProfitAmount / totalSalesAmount) * 100)
-      : 0;
-    document.getElementById('gross_profit_percentage').textContent = 
-      grossProfitPercentage.toFixed(2) + '%';
-  }
-
-  // イベントリスナーを追加
-  ['quantity', 'purchase_price', 'sell_price', 'exchange_rate'].forEach(id => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.addEventListener('input', updateCalculations);
-      element.addEventListener('change', updateCalculations);
-    }
-  });
-
-  // 初期計算
-  updateCalculations();
-
-  // URL管理
-  const addUrlButton = document.getElementById('add-url');
-  const urlFieldsContainer = document.getElementById('url-fields');
-
-  if (addUrlButton) {
-    addUrlButton.addEventListener('click', function() {
-      const newUrlField = `
-        <div class="url-field flex gap-2 mb-2">
-          <input type="text" name="order[attachment_urls][]" class="input input-bordered flex-1" placeholder="https://example.com/document">
-          <button type="button" class="btn btn-warning btn-sm remove-url">削除</button>
-        </div>
-      `;
-      urlFieldsContainer.insertAdjacentHTML('beforeend', newUrlField);
-    });
-  }
-
-  if (urlFieldsContainer) {
-    urlFieldsContainer.addEventListener('click', function(e) {
-      if (e.target.classList.contains('remove-url')) {
-        const urlField = e.target.closest('.url-field');
-        if (urlFieldsContainer.children.length > 1) {
-          urlField.remove();
-        } else {
-          urlField.querySelector('input').value = '';
-        }
-      }
-    });
-  }
-});
-</script>
