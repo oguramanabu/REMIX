@@ -1,6 +1,9 @@
 import { Controller } from "@hotwired/stimulus"
 import { createConsumer } from "@rails/actioncable"
 
+console.log("Order Chat JS loaded")
+
+
 export default class extends Controller {
   static targets = ["messages", "input", "form", "mentionList"]
   static values = { 
@@ -10,6 +13,7 @@ export default class extends Controller {
   }
 
   connect() {
+    console.log("OrderChatController connected")
     this.consumer = createConsumer()
     this.subscription = null
     this.mentionUsers = []
@@ -92,6 +96,12 @@ export default class extends Controller {
   }
 
   setupMentionHandling() {
+    console.log("Setting up mention handling, input target:", this.inputTarget)
+    if (!this.inputTarget) {
+      console.error("Input target not found!")
+      return
+    }
+    
     this.inputTarget.addEventListener("input", this.handleInput.bind(this))
     this.inputTarget.addEventListener("keydown", this.handleKeydown.bind(this))
     
@@ -104,12 +114,14 @@ export default class extends Controller {
   }
 
   async handleInput(event) {
+    console.log("handleInput triggered, value:", event.target.value)
     const input = event.target
     const cursorPosition = input.selectionStart
     const textBeforeCursor = input.value.substring(0, cursorPosition)
     
     // Check for @ mention
     const mentionMatch = textBeforeCursor.match(/@(\w*)$/)
+    console.log("Mention match:", mentionMatch)
     
     if (mentionMatch) {
       const query = mentionMatch[1]
@@ -117,7 +129,14 @@ export default class extends Controller {
       
       try {
         const response = await fetch(`/orders/${this.orderIdValue}/chat_messages/users_for_mention?q=${encodeURIComponent(query)}`)
+        console.log("Fetch response status:", response.status)
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        
         const users = await response.json()
+        console.log("Fetched users:", users)
         this.showMentionList(users)
       } catch (error) {
         console.error("Failed to fetch users:", error)
@@ -185,6 +204,8 @@ export default class extends Controller {
       </div>
     `).join("")
     
+    // Use display style instead of class manipulation
+    this.mentionListTarget.style.display = "block"
     this.mentionListTarget.classList.remove("hidden")
     
     // Position the mention list
@@ -193,6 +214,7 @@ export default class extends Controller {
 
   hideMentionList() {
     this.showingMentions = false
+    this.mentionListTarget.style.display = "none"
     this.mentionListTarget.classList.add("hidden")
     this.mentionStartIndex = -1
   }
@@ -233,13 +255,15 @@ export default class extends Controller {
   positionMentionList() {
     // Position mention list above the input
     const inputRect = this.inputTarget.getBoundingClientRect()
-    const listRect = this.mentionListTarget.getBoundingClientRect()
     
     // Position above the input
-    this.mentionListTarget.style.position = "fixed"
-    this.mentionListTarget.style.left = `${inputRect.left}px`
-    this.mentionListTarget.style.bottom = `${window.innerHeight - inputRect.top + 5}px`
-    this.mentionListTarget.style.width = `${Math.max(300, inputRect.width)}px`
+    this.mentionListTarget.style.position = "absolute"
+    this.mentionListTarget.style.left = "0"
+    this.mentionListTarget.style.bottom = `${inputRect.height + 5}px`
+    this.mentionListTarget.style.width = "auto"
+    this.mentionListTarget.style.minWidth = "250px"
+    this.mentionListTarget.style.maxWidth = `${inputRect.width}px`
+    this.mentionListTarget.style.zIndex = "9999"
   }
 
   scrollToBottom() {

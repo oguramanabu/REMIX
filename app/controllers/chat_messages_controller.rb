@@ -20,15 +20,17 @@ class ChatMessagesController < ApplicationController
   end
 
   def users_for_mention
-    # Return users who have access to this order, excluding current user
-    accessible_users = [ @order.creator ] + @order.users
-    accessible_users.uniq!
-    accessible_users.reject! { |user| user == Current.user }
+    # Return all users except current user (more typical for chat systems)
+    # You can change this back to only order-related users if needed
+    accessible_users = User.where.not(id: Current.user.id)
 
     search_query = params[:q].to_s.downcase
-    filtered_users = accessible_users.select do |user|
-      full_name = "#{user.family_name_kanji}#{user.given_name_kanji}".downcase
-      full_name.include?(search_query)
+
+    # If search query is empty, return all accessible users
+    filtered_users = if search_query.empty?
+      accessible_users.limit(10) # Limit to prevent too many results
+    else
+      accessible_users.where("LOWER(family_name_kanji || given_name_kanji) LIKE ?", "%#{search_query}%").limit(10)
     end
 
     render json: filtered_users.map { |user|

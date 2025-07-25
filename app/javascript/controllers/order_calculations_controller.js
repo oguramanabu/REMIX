@@ -1,7 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
 
-console.log("OrderCalculationsController loaded")
-
 export default class extends Controller {
   static targets = ["quantity", "purchasePrice", "sellPrice", "exchangeRate", 
                    "totalPurchaseAmount", "totalSalesAmount", "grossProfitAmount", "grossProfitPercentage"]
