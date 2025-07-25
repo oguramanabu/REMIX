@@ -4,13 +4,10 @@
        data-order-chat-order-id-value="<%= order.id %>"
        data-order-chat-current-user-id-value="<%= Current.user.id %>"
        data-order-chat-current-user-name-value="<%= Current.user.family_name_kanji %>">
-    
     <div class="card-body">
       <h2 class="card-title text-lg mb-4">
         💬 チャット
-        <span class="text-sm text-gray-500 font-normal ml-2">オーダー関係者とのやり取り</span>
       </h2>
-      
       <!-- Chat Messages Container -->
       <div class="relative">
         <!-- Messages Display -->
@@ -18,17 +15,15 @@
              data-order-chat-target="messages">
           <!-- Messages will be loaded here -->
         </div>
-        
         <!-- Mention Suggestions -->
         <div class="absolute z-50 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden"
              data-order-chat-target="mentionList">
           <!-- Mention suggestions will appear here -->
         </div>
-        
         <!-- Message Input Form -->
         <form data-order-chat-target="form" 
               data-action="submit->order-chat#sendMessage"
-              class="flex gap-2">
+          class="flex gap-2">
           <div class="flex-1 relative">
             <textarea class="textarea textarea-bordered w-full resize-none" 
                      data-order-chat-target="input"
@@ -43,7 +38,6 @@
             送信
           </button>
         </form>
-        
         <!-- Chat Instructions -->
         <div class="text-xs text-gray-500 mt-2">
           <p>💡 ヒント: @ユーザー名 でメンションすると相手に通知されます</p>
@@ -52,7 +46,6 @@
     </div>
   </div>
 <% end %>
-
 <style>
   .mention {
     background-color: #e3f2fd;

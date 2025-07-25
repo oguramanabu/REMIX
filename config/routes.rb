@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :orders do
     member do
       patch :update_file_metadata
+      delete "attachments/:attachment_id", to: "orders#delete_attachment", as: :delete_attachment
     end
     resources :chat_messages, only: [ :index, :create ] do
       collection do

@@ -174,7 +174,7 @@ export default class extends Controller {
     this.mentionListTarget.innerHTML = users.map((user, index) => `
       <div class="mention-item p-2 cursor-pointer hover:bg-gray-100 ${index === 0 ? 'selected bg-blue-100' : ''}" 
            data-user-name="${user.name}"
-           onclick="this.closest('[data-controller]').controller.selectMention('${user.name}')">
+           data-action="click->order-chat#selectMentionEvent">
         <div class="flex items-center">
           <div class="w-6 h-6 rounded-full bg-neutral text-neutral-content flex items-center justify-center mr-2">
             <span class="text-xs">${user.name[0]}</span>
@@ -195,6 +195,11 @@ export default class extends Controller {
     this.showingMentions = false
     this.mentionListTarget.classList.add("hidden")
     this.mentionStartIndex = -1
+  }
+
+  selectMentionEvent(event) {
+    const userName = event.currentTarget.dataset.userName
+    this.selectMention(userName)
   }
 
   selectMention(userName) {

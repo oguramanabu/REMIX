@@ -30,62 +30,101 @@ end
 
 puts "Created #{User.count} users"
 
-orders_data = [
-  {
-    client: "トヨタ自動車",
-    factory_name: "愛知工場",
-    order_date: Date.new(2025, 7, 1),
-    shipping_date: Date.new(2025, 7, 10),
-    delivery_date: Date.new(2025, 7, 15),
-    items: [
-      { name: "エンジン部品A", quantity: 100, unit_price: 15000 },
-      { name: "ブレーキパッド", quantity: 50, unit_price: 8000 }
-    ]
-  },
-  {
-    client: "日産自動車",
-    factory_name: "横浜工場",
-    order_date: Date.new(2025, 7, 5),
-    shipping_date: Date.new(2025, 7, 20),
-    delivery_date: Date.new(2025, 7, 25),
-    items: [
-      { name: "タイヤホイール", quantity: 200, unit_price: 25000 },
-      { name: "ミラー部品", quantity: 80, unit_price: 12000 }
-    ]
-  },
-  {
-    client: "ホンダ技研工業",
-    factory_name: "埼玉工場",
-    order_date: Date.new(2025, 7, 8),
-    shipping_date: nil,
-    delivery_date: Date.new(2025, 8, 5),
-    items: [
-      { name: "シート部品", quantity: 60, unit_price: 35000 },
-      { name: "ドア部品", quantity: 40, unit_price: 45000 }
-    ]
-  }
-]
+# Create 20 orders with varied data
+20.times do |i|
+  order_number = i + 1
+  client_names = [ "アダストリア", "しまむら", "ユニクロ", "ZARA", "H&M" ]
+  factory_names = [ "愛知工場", "横浜工場", "埼玉工場", "大阪工場", "福岡工場" ]
+  item_names = [ "PO", "SETS", "PK", "BLOUSON", "SHIRT", "PANTS", "SKIRT", "DRESS", "JACKET", "COAT" ]
+  trade_terms = [ "FOB", "CIF", "EXW", "DDP" ]
 
-orders_data.each do |order_data|
-  # Try to find a client by name, or use nil if not found
-  client = Client.find_by(name: order_data[:client])
+  # Get a random client, or nil for some orders
+  client = Client.all.sample
 
-  order = Order.find_or_create_by!(
+  order = Order.new(
     client: client,
-    factory_name: order_data[:factory_name],
-    order_date: order_data[:order_date]
-  ) do |o|
-    o.estimate_delivery_date = order_data[:shipping_date]  # Use shipping_date data for ETD
-    o.delivery_date = order_data[:delivery_date]
-    o.item_name = order_data[:items].first[:name] if order_data[:items].present?
-    o.quantity = order_data[:items].first[:quantity] if order_data[:items].present?
-    o.sell_price = order_data[:items].first[:unit_price] if order_data[:items].present?
-    o.purchase_price = order_data[:items].first[:unit_price] * 0.7 if order_data[:items].present?
-    o.creator_id = User.first.id
+    factory_name: factory_names.sample,
+    order_date: Date.current - rand(30).days,
+    delivery_date: Date.current + rand(60).days,
+    estimate_delivery_date: Date.current + rand(45).days,
+    item_number: "O#{rand(10000..99999)}#{('A'..'Z').to_a.sample}#{rand(10..99)}",
+    item_name: item_names.sample,
+    quantity: rand(50..500),
+    trade_term: trade_terms.sample,
+    purchase_price: rand(10.0..100.0).round(2),
+    sell_price: rand(100..1000),
+    exchange_rate: rand(140.0..160.0).round(2),
+    sales_multiple: rand(1.2..3.0).round(2),
+    export_port: [ "上海", "青島", "天津", "大連" ].sample,
+    license: rand < 0.3 ? "License-#{rand(1000..9999)}" : nil,
+    status: "draft", # Always start as draft to avoid validation issues
+    creator: User.first,
+    attachment_urls: rand < 0.4 ? [ "https://example.com/doc#{rand(1..100)}.pdf" ] : []
+  )
+
+  # Save without validation for seed data
+  order.save(validate: false)
+
+  # Assign random users to some orders
+  if rand < 0.6 && User.count > 1
+    users_to_assign = User.all.sample(rand(1..2))
+    users_to_assign.each do |user|
+      order.order_users.create!(user: user)
+    end
   end
+
+  puts "Created order #{order_number}: #{order.item_name} for #{client&.name || 'No Client'}"
 end
 
-puts "Created #{Order.count} orders"
+# Create sample files for some orders
+require 'tempfile'
+
+orders_with_files = Order.limit(10).order("RANDOM()")
+orders_with_files.each_with_index do |order, index|
+  # Create 1-3 sample files for each order
+  file_count = rand(1..3)
+
+  file_count.times do |file_index|
+    # Create a temporary file with sample content
+    temp_file = Tempfile.new([ "sample_#{index}_#{file_index}", [ '.pdf', '.doc', '.jpg', '.png' ].sample ])
+
+    case temp_file.path.split('.').last
+    when 'pdf'
+      temp_file.write("Sample PDF content for order #{order.id}")
+    when 'doc'
+      temp_file.write("Sample DOC content for order #{order.id}")
+    when 'jpg', 'png'
+      temp_file.write("Sample image content for order #{order.id}")
+    end
+
+    temp_file.rewind
+
+    # Attach the file to the order
+    order.files.attach(
+      io: temp_file,
+      filename: "sample_file_#{order.id}_#{file_index + 1}#{File.extname(temp_file.path)}",
+      content_type: case File.extname(temp_file.path)
+                    when '.pdf'
+                     'application/pdf'
+                    when '.doc'
+                     'application/msword'
+                    when '.jpg'
+                     'image/jpeg'
+                    when '.png'
+                     'image/png'
+                    else
+                     'application/octet-stream'
+                    end
+    )
+
+    temp_file.close
+    temp_file.unlink
+  end
+
+  puts "Attached #{file_count} files to order #{order.id}"
+end
+
+puts "Created #{Order.count} orders (#{Order.joins(:files_attachments).distinct.count} with attachments)"
 
 # Create Clients with shipping addresses
 clients_data = [

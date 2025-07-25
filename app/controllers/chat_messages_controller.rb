@@ -20,9 +20,10 @@ class ChatMessagesController < ApplicationController
   end
 
   def users_for_mention
-    # Return users who have access to this order
+    # Return users who have access to this order, excluding current user
     accessible_users = [ @order.creator ] + @order.users
     accessible_users.uniq!
+    accessible_users.reject! { |user| user == Current.user }
 
     search_query = params[:q].to_s.downcase
     filtered_users = accessible_users.select do |user|
