@@ -1,20 +1,20 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
+  static values = { delay: Number }
+
   connect() {
-    // Animate in
-    setTimeout(() => {
-      this.element.classList.remove('translate-x-full')
-    }, 100)
-    
-    // Auto hide after 5 seconds
-    setTimeout(() => {
-      this.dismiss()
-    }, 5000)
+    if (this.hasDelayValue) {
+      setTimeout(() => {
+        this.dismiss()
+      }, this.delayValue)
+    }
   }
 
   dismiss() {
-    this.element.classList.add('translate-x-full')
+    this.element.style.transition = "opacity 0.3s ease-out"
+    this.element.style.opacity = "0"
+    
     setTimeout(() => {
       this.element.remove()
     }, 300)

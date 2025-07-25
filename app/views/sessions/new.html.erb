@@ -1,12 +1,6 @@
   <%= image_tag "login_bg.jpg", class: "object-cover max-h-screen w-full" %>
 <div class="mx-auto w-full absolute top-0 left-0 right-0 bottom-20 flex justify-center items-center">
   <div class="w-full max-w-md">
-    <% if alert = flash[:alert] %>
-      <p class="py-2 px-3 bg-red-50 mb-5 text-red-500 font-medium rounded-lg inline-block" id="alert"><%= alert %></p>
-    <% end %>
-    <% if notice = flash[:notice] %>
-      <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
-    <% end %>
     <%= image_tag "logo.png", class: "w-[100] mx-auto mb-10" %>
     <%= form_with url: session_url do |form| %>
       <fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-6 w-full">

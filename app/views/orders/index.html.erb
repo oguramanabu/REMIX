@@ -26,7 +26,7 @@
         <% @orders.each do |order| %>
           <tr class="hover:bg-gray-50">
             <td class="font-medium">
-              <%= link_to "##{order.id}", order_path(order), class: "link link-primary" %>
+              <%= link_to "#{order.item_number}", order_path(order), class: "link link-primary whitespace-nowrap" %>
             </td>
             <td><%= order.client&.name || order.client %></td>
             <td><%= order.item_name || "-" %></td>

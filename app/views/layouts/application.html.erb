@@ -3,6 +3,7 @@
   <%= render "layouts/head" %>
   <body class="flex">
     <%= render "layouts/header" if authenticated? %>
+    <%= render "layouts/flash" %>
     <main class="w-full min-h-screen">
       <%= yield %>
     </main>

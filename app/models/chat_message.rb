@@ -3,7 +3,7 @@ class ChatMessage < ApplicationRecord
   belongs_to :user
 
   validates :content, presence: true
-  serialize :mentioned_users, JSON
+  serialize :mentioned_users, coder: JSON
 
   scope :recent, -> { order(created_at: :desc) }
   scope :for_order, ->(order_id) { where(order_id: order_id) }
