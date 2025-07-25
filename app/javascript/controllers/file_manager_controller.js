@@ -51,7 +51,7 @@ export default class extends Controller {
 
       if (data.success) {
         // Remove the file item from the DOM
-        let fileItem = event.currentTarget.closest('.flex.items-center.justify-between')
+        let fileItem = event.currentTarget.closest('div.flex.items-center.justify-between')
         
         console.log('Found file item to remove:', fileItem)
         
@@ -65,7 +65,7 @@ export default class extends Controller {
           // Check if there are no more files and hide the section
           const filesContainer = this.element.querySelector('.mb-4')
           if (filesContainer) {
-            const remainingFiles = filesContainer.querySelectorAll('.flex.items-center.justify-between')
+            const remainingFiles = filesContainer.querySelectorAll('div.flex.items-center.justify-between')
             console.log('Remaining files count:', remainingFiles.length)
             if (remainingFiles.length === 0) {
               filesContainer.style.display = 'none'

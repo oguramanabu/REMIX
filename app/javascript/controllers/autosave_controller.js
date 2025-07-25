@@ -56,6 +56,9 @@ export default class extends Controller {
 
     const formData = new FormData(this.formTarget)
     
+    // Remove file inputs from autosave to prevent duplication
+    formData.delete("order[files][]")
+    
     // Add draft status for auto-save
     formData.set("order[status]", "draft")
     formData.set("commit", "autosave")
@@ -112,7 +115,7 @@ export default class extends Controller {
   serializeFormData(formData) {
     const entries = []
     for (let [key, value] of formData.entries()) {
-      if (key !== "authenticity_token" && key !== "commit") {
+      if (key !== "authenticity_token" && key !== "commit" && key !== "order[files][]") {
         entries.push(`${key}=${value}`)
       }
     }

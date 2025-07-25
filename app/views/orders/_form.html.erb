@@ -208,7 +208,7 @@
               
               <!-- 既存のファイル表示 -->
               <% if order.persisted? && order.files.attached? %>
-                <div class="mb-4" data-controller="file-manager" data-file-manager-order-id-value="<%= order.id %>">
+                <div class="mb-4" data-unified-file-target="existingContainer">
                   <p class="text-sm font-semibold text-gray-700 mb-2">添付済みファイル:</p>
                   <div class="space-y-2">
                     <% order.files.each do |file| %>
@@ -218,7 +218,7 @@
                           <span class="text-xs text-gray-500"><%= number_to_human_size(file.byte_size) %></span>
                           <%= link_to "削除", "#", class: "text-xs text-red-600 hover:text-red-700", 
                               data: { 
-                                action: "click->file-manager#removeExistingFile",
+                                action: "click->unified-file#removeExistingFile",
                                 file_id: file.signed_id
                               } %>
                         </div>
@@ -229,16 +229,17 @@
               <% end %>
               
               <!-- 新規ファイル選択エリア -->
-              <div data-controller="file-upload" 
-                   data-file-upload-target="dropZone"
-                   data-action="click->file-upload#click dragenter->file-upload#dragenter dragover->file-upload#dragover dragleave->file-upload#dragleave drop->file-upload#drop"
+              <div data-controller="unified-file" 
+                   data-unified-file-order-id-value="<%= order.persisted? ? order.id : '' %>"
+                   data-unified-file-target="dropZone"
+                   data-action="click->unified-file#click dragenter->unified-file#dragenter dragover->unified-file#dragover dragleave->unified-file#dragleave drop->unified-file#drop"
                    class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-gray-400 transition-colors">
                 <%= form.file_field :files, multiple: true, 
                     class: "hidden", 
                     data: { 
-                      "file-upload-target": "input",
-                      action: "change->file-upload#change"
-                    }, 
+                      "unified-file-target": "input",
+                      action: "change->unified-file#change"
+                    },
                     accept: "*/*" %>
                 <div class="space-y-2">
                   <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
@@ -248,14 +249,14 @@
                     <span class="font-medium text-blue-600 hover:text-blue-500">クリックしてファイルを選択</span>
                     <span class="text-gray-500">またはここにファイルをドラッグ＆ドロップ</span>
                   </p>
-                  <p class="text-sm text-gray-500">複数ファイルを選択できます（新しく選択すると以前の選択は置き換わります）</p>
+                  <p class="text-sm text-gray-500">複数ファイルを選択できます</p>
                 </div>
               </div>
               
               <!-- 選択されたファイルの表示エリア -->
-              <div data-file-upload-target="selectedContainer" class="mt-4 hidden">
+              <div data-unified-file-target="selectedContainer" class="mt-4 hidden">
                 <p class="text-sm font-semibold text-gray-700 mb-2">選択されたファイル:</p>
-                <div data-file-upload-target="selectedList" class="space-y-2"></div>
+                <div data-unified-file-target="selectedList" class="space-y-2"></div>
               </div>
             </div>
 
@@ -296,3 +297,4 @@
     <% end %>
   </div>
 <% end %>
+
