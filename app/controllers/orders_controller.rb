@@ -222,15 +222,36 @@ class OrdersController < ApplicationController
         # Purge the attachment
         attachment_to_delete.purge
         Rails.logger.info "Attachment purged successfully"
-        render json: { success: true, message: "ファイルが削除されました" }
+
+        respond_to do |format|
+          format.json { render json: { success: true, message: "ファイルが削除されました" } }
+          format.html {
+            flash[:notice] = "ファイルが削除されました"
+            redirect_to edit_order_path(@order)
+          }
+        end
       else
         Rails.logger.error "Attachment not found with signed_id: #{params[:attachment_id]}"
-        render json: { success: false, error: "ファイルが見つかりません" }, status: :not_found
+
+        respond_to do |format|
+          format.json { render json: { success: false, error: "ファイルが見つかりません" }, status: :not_found }
+          format.html {
+            flash[:alert] = "ファイルが見つかりません"
+            redirect_to edit_order_path(@order)
+          }
+        end
       end
     rescue StandardError => e
       Rails.logger.error "Unexpected error in delete_attachment: #{e.class} - #{e.message}"
       Rails.logger.error e.backtrace.join("\n")
-      render json: { success: false, error: "ファイルの削除中にエラーが発生しました" }, status: :internal_server_error
+
+      respond_to do |format|
+        format.json { render json: { success: false, error: "ファイルの削除中にエラーが発生しました" }, status: :internal_server_error }
+        format.html {
+          flash[:alert] = "ファイルの削除中にエラーが発生しました"
+          redirect_to edit_order_path(@order)
+        }
+      end
     end
   end
 
