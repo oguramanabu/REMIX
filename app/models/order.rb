@@ -1,6 +1,7 @@
 class Order < ApplicationRecord
   belongs_to :creator, class_name: "User"
   belongs_to :client, optional: true
+  belongs_to :shipping_address, optional: true
   has_many :order_users, dependent: :destroy
   has_many :users, through: :order_users
   has_many :chat_messages, dependent: :destroy
@@ -12,6 +13,7 @@ class Order < ApplicationRecord
 
   # Conditional validations - only required for submitted/completed orders
   validates :client_id, presence: true, if: -> { submitted? || completed? }
+  validates :shipping_address_id, presence: true, if: -> { submitted? || completed? }
   validates :factory_name, presence: true, if: -> { submitted? || completed? }
   validates :order_date, presence: true, if: -> { submitted? || completed? }
   validates :item_name, presence: true, if: -> { submitted? || completed? }

@@ -3,10 +3,11 @@
   class: "space-y-6", 
   id: "order-form",
   data: {
-    controller: "autosave",
+    controller: "autosave order-form",
     autosave_url_value: order.persisted? ? order_path(order) : orders_path,
     autosave_method_value: order.persisted? ? "PATCH" : "POST",
-    autosave_target: "form"
+    autosave_target: "form",
+    order_form_shipping_addresses_url_value: "/orders/shipping_addresses"
   }
 } do |form| %>
   <% if order.errors.any? %>
@@ -34,7 +35,18 @@
               <%= form.label :client_id, "クライアント", class: "label label-text-alt" %>
               <%= form.collection_select :client_id, Client.all, :id, :name, 
                   { prompt: "選択してください" }, 
-                  { class: "select select-bordered w-full text-gray-300" } %>
+                  { class: "select select-bordered w-full",
+                    data: { action: "change->order-form#updateShippingAddresses" } } %>
+                  
+            </div>
+            
+            <div class="form-control">
+              <%= form.label :shipping_address_id, "配送先", class: "label label-text-alt" %>
+              <%= form.collection_select :shipping_address_id, 
+                  order.client&.shipping_addresses || [], :id, :display_name,
+                  { prompt: "選択してください" }, 
+                  { class: "select select-bordered w-full",
+                    data: { "order-form-target": "shippingAddressSelect" } } %>
             </div>
             
             <div class="form-control">
@@ -263,7 +275,7 @@
 
             <!-- URL管理 -->
             <div class="form-control" data-controller="url-fields">
-              <label class="label label-text-alt">関連URL</label>
+              <label class="label label-text-alt">関連URL(GoogleやDropboxの共有リンク)</label>
               <div data-url-fields-target="container" class="space-y-2">
                 <% if order.attachment_urls.present? %>
                   <% order.attachment_urls.each do |url| %>

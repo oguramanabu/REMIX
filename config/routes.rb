@@ -4,6 +4,9 @@ Rails.application.routes.draw do
   resource :settings, only: [ :show, :update ], as: :settings
   resources :clients
   resources :orders do
+    collection do
+      get :shipping_addresses
+    end
     member do
       patch :update_file_metadata
       delete "attachments/:attachment_id", to: "orders#delete_attachment", as: :attachment

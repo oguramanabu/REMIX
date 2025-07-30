@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_22_114508) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_30_023103) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -103,8 +103,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_114508) do
     t.string "license"
     t.bigint "client_id"
     t.string "status", default: "draft", null: false
+    t.bigint "shipping_address_id"
     t.index [ "client_id" ], name: "index_orders_on_client_id"
     t.index [ "creator_id" ], name: "index_orders_on_creator_id"
+    t.index [ "shipping_address_id" ], name: "index_orders_on_shipping_address_id"
     t.index [ "status" ], name: "index_orders_on_status"
   end
 
@@ -159,6 +161,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_114508) do
   add_foreign_key "order_users", "orders"
   add_foreign_key "order_users", "users"
   add_foreign_key "orders", "clients"
+  add_foreign_key "orders", "shipping_addresses"
   add_foreign_key "orders", "users", column: "creator_id"
   add_foreign_key "sessions", "users"
   add_foreign_key "shipping_addresses", "clients"
