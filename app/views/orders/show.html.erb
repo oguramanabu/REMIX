@@ -2,10 +2,23 @@
   <div class="flex justify-between items-center mb-6">
     <div>
       <h1 class="text-3xl font-bold text-gray-900">オーダー詳細 #<%= @order.id %></h1>
-      <div class="mt-2">
-        <span class="badge <%= @order.status_badge_class %> badge-lg"><%= @order.status_label %></span>
+      <div class="mt-2 flex items-center gap-3">
+        <% if @order.draft? %>
+          <span class="text-sm text-gray-500">ステータス: 下書き</span>
+          <%= button_to "公開する", update_status_order_path(@order), 
+              method: :patch, 
+              params: { status: "submitted" },
+              class: "btn btn-sm btn-success",
+              data: { confirm: "このオーダーを公開しますか？" } %>
+        <% else %>
+          <span class="badge badge-success badge-lg">公開中</span>
+          <%= button_to "下書きに戻す", update_status_order_path(@order), 
+              method: :patch, 
+              params: { status: "draft" },
+              class: "btn btn-sm btn-outline btn-warning" %>
+        <% end %>
         <% if @order.shareable? %>
-          <span class="badge badge-info badge-sm ml-2">共有可能</span>
+          <span class="badge badge-info badge-sm">共有可能</span>
         <% end %>
       </div>
     </div>

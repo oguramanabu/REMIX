@@ -9,17 +9,17 @@ class Order < ApplicationRecord
   has_many_attached :files
 
   # Status enum-like behavior
-  validates :status, inclusion: { in: %w[draft submitted completed cancelled] }
+  validates :status, inclusion: { in: %w[draft submitted] }
 
-  # Conditional validations - only required for submitted/completed orders
-  validates :client_id, presence: true, if: -> { submitted? || completed? }
-  validates :shipping_address_id, presence: true, if: -> { submitted? || completed? }
-  validates :factory_name, presence: true, if: -> { submitted? || completed? }
-  validates :order_date, presence: true, if: -> { submitted? || completed? }
-  validates :item_name, presence: true, if: -> { submitted? || completed? }
-  validates :quantity, presence: true, numericality: { greater_than: 0 }, if: -> { submitted? || completed? }
-  validates :purchase_price, presence: true, numericality: { greater_than_or_equal_to: 0 }, if: -> { submitted? || completed? }
-  validates :sell_price, presence: true, numericality: { greater_than_or_equal_to: 0 }, if: -> { submitted? || completed? }
+  # Conditional validations - only required for submitted orders
+  validates :client_id, presence: true, if: -> { submitted? }
+  validates :shipping_address_id, presence: true, if: -> { submitted? }
+  validates :factory_name, presence: true, if: -> { submitted? }
+  validates :order_date, presence: true, if: -> { submitted? }
+  validates :item_name, presence: true, if: -> { submitted? }
+  validates :quantity, presence: true, numericality: { greater_than: 0 }, if: -> { submitted? }
+  validates :purchase_price, presence: true, numericality: { greater_than_or_equal_to: 0 }, if: -> { submitted? }
+  validates :sell_price, presence: true, numericality: { greater_than_or_equal_to: 0 }, if: -> { submitted? }
 
   validate :validate_urls
 
@@ -32,21 +32,11 @@ class Order < ApplicationRecord
     status == "submitted"
   end
 
-  def completed?
-    status == "completed"
-  end
-
-  def cancelled?
-    status == "cancelled"
-  end
-
   # Status badge color methods
   def status_badge_class
     case status
     when "draft" then "badge-info"
-    when "submitted" then "badge-warning"
-    when "completed" then "badge-success"
-    when "cancelled" then "badge-error"
+    when "submitted" then "badge-success"
     else "badge-ghost"
     end
   end
@@ -54,9 +44,7 @@ class Order < ApplicationRecord
   def status_label
     case status
     when "draft" then "下書き"
-    when "submitted" then "提出済み"
-    when "completed" then "完了"
-    when "cancelled" then "キャンセル"
+    when "submitted" then "公開"
     else status
     end
   end

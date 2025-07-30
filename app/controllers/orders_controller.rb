@@ -1,7 +1,7 @@
 class OrdersController < ApplicationController
   before_action :require_authentication
-  before_action :set_order, only: [ :show, :edit, :update, :destroy, :update_file_metadata, :delete_attachment ]
-  before_action :check_order_access, only: [ :show, :edit, :update, :destroy, :update_file_metadata, :delete_attachment ]
+  before_action :set_order, only: [ :show, :edit, :update, :destroy, :update_status, :update_file_metadata, :delete_attachment ]
+  before_action :check_order_access, only: [ :show, :edit, :update, :destroy, :update_status, :update_file_metadata, :delete_attachment ]
 
   def index
     # Show orders the user created or is assigned to
@@ -162,7 +162,7 @@ class OrdersController < ApplicationController
       if new_files.present?
         @order.files.attach(new_files)
       end
-      redirect_to order_path(@order), notice: "オーダーが提出されました。"
+      redirect_to order_path(@order), notice: "オーダーが公開されました。"
     else
       @users = User.all
       render :edit, status: :unprocessable_entity
@@ -172,6 +172,31 @@ class OrdersController < ApplicationController
   def destroy
     @order.destroy
     redirect_to orders_path, notice: "オーダーが削除されました。"
+  end
+
+  def update_status
+    new_status = params[:status]
+
+    # Validate status transition
+    if %w[draft submitted].include?(new_status)
+      old_status = @order.status
+      @order.status = new_status
+
+      # If changing from draft to submitted, validate required fields
+      if old_status == "draft" && new_status == "submitted"
+        if @order.save
+          redirect_to order_path(@order), notice: "オーダーが公開されました。"
+        else
+          redirect_to order_path(@order), alert: "オーダーを公開できません。必須項目を確認してください。"
+        end
+      else
+        # Changing from submitted to draft, save without validation
+        @order.save(validate: false)
+        redirect_to order_path(@order), notice: "オーダーが下書きに戻されました。"
+      end
+    else
+      redirect_to order_path(@order), alert: "無効なステータスです。"
+    end
   end
 
   def shipping_addresses
