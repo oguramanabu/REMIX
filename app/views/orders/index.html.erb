@@ -47,15 +47,16 @@
               <% end %>
             </td>
             <td>
-              <% if order.users.any? %>
+              <% order_users = order.users.to_a %>
+              <% if order_users.any? %>
                 <div class="flex flex-wrap gap-1">
-                  <% order.users.limit(2).each do |user| %>
+                  <% order_users.first(2).each do |user| %>
                     <span class="badge badge-sm badge-outline">
                       <%= user.family_name_kanji %>
                     </span>
                   <% end %>
-                  <% if order.users.count > 2 %>
-                    <span class="badge badge-sm badge-ghost">+<%= order.users.count - 2 %></span>
+                  <% if order_users.size > 2 %>
+                    <span class="badge badge-sm badge-ghost">+<%= order_users.size - 2 %></span>
                   <% end %>
                 </div>
               <% else %>
@@ -82,7 +83,7 @@
                       data: { 
                         order_id: order.id,
                         order_url: order_url(order),
-                        assigned_users: order.users.map { |u| "#{u.family_name_kanji} #{u.given_name_kanji} (#{u.email_address})" }.join(", ")
+                        assigned_users: order_users.map { |u| "#{u.family_name_kanji} #{u.given_name_kanji} (#{u.email_address})" }.join(", ")
                       } %>
                 <% end %>
               </div>

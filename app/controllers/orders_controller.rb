@@ -5,7 +5,8 @@ class OrdersController < ApplicationController
 
   def index
     # Show orders the user created or is assigned to
-    @orders = Order.includes(:creator, :users, :client)
+    @orders = Order.includes(:creator, :client)
+                   .preload(:users)  # Use preload to avoid N+1 queries
                    .left_joins(:order_users)
                    .where("orders.creator_id = ? OR order_users.user_id = ?",
                           Current.user.id, Current.user.id)
@@ -173,6 +174,13 @@ class OrdersController < ApplicationController
     redirect_to orders_path, notice: "オーダーが削除されました。"
   end
 
+  def shipping_addresses
+    client = Client.find_by(id: params[:client_id])
+    addresses = client&.shipping_addresses || []
+
+    render json: addresses.map { |addr| { id: addr.id, display_name: addr.display_name } }
+  end
+
   def update_file_metadata
     original_filename = params[:original_filename]
     new_filename = params[:new_filename]
@@ -268,7 +276,7 @@ class OrdersController < ApplicationController
   end
 
   def order_params
-    params.require(:order).permit(:client_id, :factory_name, :order_date, :delivery_date,
+    params.require(:order).permit(:client_id, :shipping_address_id, :factory_name, :order_date, :delivery_date,
                                   :item_number, :item_name, :quantity, :trade_term, :purchase_price,
                                   :sell_price, :export_port, :estimate_delivery_date, :sales_multiple,
                                   :exchange_rate, :license, :file_metadata, :status,
